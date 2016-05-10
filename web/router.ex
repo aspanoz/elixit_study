@@ -9,9 +9,11 @@ defmodule AppPhoenix.Router do
     plug :put_secure_browser_headers
   end
 
+
   pipeline :api do
     plug :accepts, ["json"]
   end
+
 
   scope "/", AppPhoenix do
     pipe_through :browser # Use the default browser stack
@@ -20,10 +22,7 @@ defmodule AppPhoenix.Router do
 
     resources "/posts", PostController
     resources "/users", UserController
+    resources "/sessions", SessionController, only: [:new, :create, :delete]
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", AppPhoenix do
-  #   pipe_through :api
-  # end
 end

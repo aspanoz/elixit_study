@@ -1,0 +1,70 @@
+defmodule AppPhoenix.SessionControllerTest do
+  use AppPhoenix.ConnCase
+  alias AppPhoenix.User
+
+  @setup_attrs %{
+    username: "test",
+    password: "test",
+    password_confirmation: "test",
+    email: "test@test.com"
+  }
+  @valid_conn %{
+    username: "test",
+    password: "test"
+  }
+  @invalid_conn_pass %{
+    username: "test",
+    password: "wrong"
+  }
+  @invalid_conn_user_pass %{
+    username: "foo",
+    password: "wrong"
+  }
+
+
+  setup do
+    User.changeset(%User{}, @setup_attrs)
+      |> Repo.insert
+    conn = conn()
+    {:ok, conn: conn}
+  end
+
+
+  test "shows the login form", %{conn: conn} do
+    conn = get conn, session_path(conn, :new)
+    assert html_response(conn, 200) =~ "Login"
+  end
+
+
+  test "creates a new user session for a valid user", %{conn: conn} do
+    conn = post conn, session_path(conn, :create), user: @valid_conn
+    assert get_session(conn, :current_user)
+    assert get_flash(conn, :info) == "Sign in successful!"
+    assert redirected_to(conn) == page_path(conn, :index)
+  end
+
+
+  test "does not create a session with a bad login", %{conn: conn} do
+    conn = post conn, session_path(conn, :create), user: @invalid_conn_pass
+    refute get_session(conn, :current_user)
+    assert get_flash(conn, :error) == "Invalid username/password combination!"
+    assert redirected_to(conn) == page_path(conn, :index)
+  end
+
+
+  test "does not create a session if user does not exist", %{conn: conn} do    
+    conn = post conn, session_path(conn, :create), user: @invalid_conn_user_pass
+    assert get_flash(conn, :error) == "Invalid username/password combination!"
+    assert redirected_to(conn) == page_path(conn, :index)
+  end
+
+
+  test "deletes the user session", %{conn: conn} do
+    user = Repo.get_by(User, %{username: "test"})
+    conn = delete conn, session_path(conn, :delete, user)
+    refute get_session(conn, :current_user)
+    assert get_flash(conn, :info) == "Signed out successfully!"
+    assert redirected_to(conn) == page_path(conn, :index)
+  end
+
+end

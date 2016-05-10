@@ -1,6 +1,26 @@
-<div class="jumbotron">
+<!--div class="jumbotron">
   <h2><%= gettext "Welcome to %{name}", name: "Phoenix!" %></h2>
   <p class="lead">A productive web framework that<br />does not compromise speed and maintainability.</p>
+</div-->
+
+<div class="row">
+  <div class="col-lg-6">
+    <h4>Test</h4>
+    <ul>
+      <li>
+        <a href="/users/">Users</a>
+      </li>
+      <li>
+        <a href="/posts">Posts</a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="col-lg-6">
+    <h4>Whatever</h4>
+    <ul>
+    </ul>
+  </div>
 </div>
 
 <div class="row marketing">
