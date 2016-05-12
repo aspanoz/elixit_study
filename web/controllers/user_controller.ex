@@ -23,8 +23,8 @@ defmodule AppPhoenix.UserController do
     case Repo.insert(changeset) do
       {:ok, _user} ->
         conn
-        |> put_flash(:info, "User created successfully.")
-        |> redirect(to: user_path(conn, :index))
+          |> put_flash(:info, "User created successfully.")
+          |> redirect(to: user_path(conn, :index))
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
@@ -50,8 +50,8 @@ defmodule AppPhoenix.UserController do
     case Repo.update(changeset) do
       {:ok, user} ->
         conn
-        |> put_flash(:info, "User updated successfully.")
-        |> redirect(to: user_path(conn, :show, user))
+          |> put_flash(:info, "User updated successfully.")
+          |> redirect(to: user_path(conn, :show, user))
       {:error, changeset} ->
         render(conn, "edit.html", user: user, changeset: changeset)
     end
@@ -60,12 +60,10 @@ defmodule AppPhoenix.UserController do
 
   def delete(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
-    # Here we use delete! (with a bang) because we expect
-    # it to always work (and if it does not, it will raise).
     Repo.delete!(user)
     conn
-    |> put_flash(:info, "User deleted successfully.")
-    |> redirect(to: user_path(conn, :index))
+      |> put_flash(:info, "User deleted successfully.")
+      |> redirect(to: user_path(conn, :index))
   end
 
 end

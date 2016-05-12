@@ -12,7 +12,9 @@ defmodule AppPhoenix.SessionController do
     render conn, "new.html", changeset: User.changeset(%User{})
   end
 
-
+  @doc """
+    Login action. If no user, call fail function
+  """
   def create(conn, %{"user" => %{"username" => username, "password" => password}})
     when not is_nil(username) and not is_nil(password)
   do
@@ -33,6 +35,9 @@ defmodule AppPhoenix.SessionController do
   end
 
 
+  @doc """
+    Login helper. Fail function
+  """
   defp failed_login(conn) do
     conn
       |> put_session(:current_user, nil)
@@ -42,6 +47,9 @@ defmodule AppPhoenix.SessionController do
   end
 
 
+  @doc """
+    Login helper. sing_in function
+  """
   defp sign_in(user, _password, conn) when is_nil(user) do
     failed_login(conn)
   end
