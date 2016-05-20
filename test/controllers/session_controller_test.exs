@@ -1,6 +1,7 @@
 defmodule AppPhoenix.SessionControllerTest do
   use AppPhoenix.ConnCase
   alias AppPhoenix.User
+  alias AppPhoenix.TestHelper
 
   @setup_attrs %{
     username: "test",
@@ -21,10 +22,9 @@ defmodule AppPhoenix.SessionControllerTest do
     password: "wrong"
   }
 
-
   setup do
-    User.changeset(%User{}, @setup_attrs)
-      |> Repo.insert
+    {:ok, role} = TestHelper.create_role(%{name: "User", admin: false})
+    {:ok, _user} = TestHelper.create_user(role, @setup_attrs)
     conn = conn()
     {:ok, conn: conn}
   end

@@ -35,9 +35,7 @@ defmodule AppPhoenix.SessionController do
   end
 
 
-  @doc """
-    Login helper. Fail function
-  """
+    # Login helper. Fail function
   defp failed_login(conn) do
     conn
       |> put_session(:current_user, nil)
@@ -47,9 +45,7 @@ defmodule AppPhoenix.SessionController do
   end
 
 
-  @doc """
-    Login helper. sing_in function
-  """
+    # Login helper. sing_in function
   defp sign_in(user, _password, conn) when is_nil(user) do
     failed_login(conn)
   end
@@ -57,7 +53,7 @@ defmodule AppPhoenix.SessionController do
   defp sign_in(user, password, conn) do
     if checkpw(password, user.password_digest) do
       conn
-        |> put_session(:current_user, %{id: user.id, username: user.username})
+        |> put_session(:current_user, %{id: user.id, username: user.username, role_id: user.role_id})
         |> put_flash(:info, "Sign in successful!")
         |> redirect(to: page_path(conn, :index))
     else

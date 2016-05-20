@@ -2,11 +2,26 @@ defmodule AppPhoenix.UserTest do
   use AppPhoenix.ModelCase
 
   alias AppPhoenix.User
+  alias AppPhoenix.TestHelper
 
   @valid_attrs %{email: "test@test.com", password: "test1234", password_confirmation: "test1234", username: "testuser"}
-
   @invalid_attrs %{}
   @invalid_attrs_nil_pass %{email: "test@test.com", password: nil, password_confirmation: nil, username: "test"}
+
+  setup do
+    {:ok, role}  = TestHelper.create_role(%{name: "user", admin: false})
+    {:ok, role: role}
+  end
+
+  defp valid_attrs(role) do
+    Map.put(@valid_attrs, :role_id, role.id)
+  end
+
+
+  test "changeset with valid attributes", %{role: role} do
+    changeset = User.changeset(%User{}, valid_attrs(role))
+    assert changeset.valid?
+  end
 
   test "changeset with valid attributes" do
     changeset = User.changeset(%User{}, @valid_attrs)
@@ -27,4 +42,5 @@ defmodule AppPhoenix.UserTest do
     changeset = User.changeset(%User{}, @invalid_attrs_nil_pass)
     refute Ecto.Changeset.get_change(changeset, :password_digest)
   end
+
 end

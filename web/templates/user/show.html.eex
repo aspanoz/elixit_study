@@ -21,3 +21,4 @@
 
 <%= link "Edit", to: user_path(@conn, :edit, @user) %>
 <%= link "Back", to: user_path(@conn, :index) %>
+<%= link "Posts", to: user_post_path(@conn, :index, @user) %>

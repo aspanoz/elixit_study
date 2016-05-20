@@ -10,6 +10,7 @@ defmodule AppPhoenix.User do
     field :password_digest, :string
     # FK link
     has_many :posts, AppPhoenix.Post
+    belongs_to :role, AppPhoenix.Role
     # created/updated timestamps
     timestamps
     # Virtual Fields
@@ -18,7 +19,7 @@ defmodule AppPhoenix.User do
   end
 
 
-  @required_fields ~w(username email password password_confirmation)
+  @required_fields ~w(username email password password_confirmation role_id)
   @optional_fields ~w()
 
 

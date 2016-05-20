@@ -3,6 +3,9 @@ defmodule AppPhoenix.PostController do
 
   alias AppPhoenix.Post
   alias AppPhoenix.User
+  alias AppPhoenix.RoleChecker
+  alias AppPhoenix.TextProcessor
+  alias AppPhoenix.MyDebuger
 
   plug :scrub_params, "post" when action in [:create, :update]
   plug :assign_user
@@ -34,9 +37,10 @@ defmodule AppPhoenix.PostController do
 
     # Plug for access rights to CUD-action, action list in plug defenition
     # Only owner post user can do somethink with it
-  defp authorize_user(conn, _opts) do
+  defp authorize_user(conn, _) do
     user = get_session(conn, :current_user)
-    if user && Integer.to_string(user.id) == conn.params["user_id"] do
+    # MyDebuger.echo(user, "User: ")
+    if user && (Integer.to_string(user.id) == conn.params["user_id"] || RoleChecker.is_admin?(user)) do
       conn
     else
       conn
@@ -80,7 +84,9 @@ defmodule AppPhoenix.PostController do
 
   def show(conn, %{"id" => id}) do
     post = Repo.get!(assoc(conn.assigns[:user], :posts), id)
-    render(conn, "show.html", post: post)
+    conn
+      |> assign(:parse_post, TextProcessor.parse_post(post.body))
+      |> render("show.html", post: post)
   end
 
 

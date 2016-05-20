@@ -12,6 +12,11 @@
     <%= @post.body %>
   </li>
 
+  <li>
+    <strong>Parse post:</strong>
+    <%= @parse_post || "Whatever" %>
+  </li>
+
 </ul>
 
 <%=
