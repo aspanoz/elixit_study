@@ -17,12 +17,26 @@ defmodule AppPhoenix.Mixfile do
   # Configuration for the OTP application.
   #
   # Type `mix help compile.app` for more information.
+
   def application do
     [
       mod: {AppPhoenix, []},
-      applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
-        :phoenix_ecto, :mariaex, :comeonin
-      ]
+      applications: app_list(Mix.env)
+    ]
+  end
+
+  defp app_list(:test), do: [:ex_machina | app_list]
+  defp app_list(_), do: app_list
+  defp app_list do
+    [
+      :phoenix,
+      :phoenix_html,
+      :cowboy,
+      :logger,
+      :gettext,
+      :phoenix_ecto,
+      :mariaex,
+      :comeonin
     ]
   end
 
@@ -42,7 +56,8 @@ defmodule AppPhoenix.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.9"},
       {:cowboy, "~> 1.0"},
-      {:comeonin, "~> 2.4"}
+      {:comeonin, "~> 2.4"},
+      {:ex_machina, "~> 0.6.1"}
     ]
   end
 
