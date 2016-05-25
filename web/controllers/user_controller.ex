@@ -1,10 +1,13 @@
 defmodule AppPhoenix.UserController do
+  @moduledoc '''
+    User controller
+  '''
   use AppPhoenix.Web, :controller
 
   alias AppPhoenix.User
   alias AppPhoenix.RoleChecker
   alias AppPhoenix.Role
-  alias AppPhoenix.MyDebuger
+  # alias AppPhoenix.MyDebuger
 
   plug :scrub_params, "user" when action in [:create, :update]
   plug :authorize_admin when action in [:new, :create]
@@ -12,7 +15,11 @@ defmodule AppPhoenix.UserController do
 
   defp authorize_user(conn, _) do
     user = get_session(conn, :current_user)
-    if user && (Integer.to_string(user.id) == conn.params["id"] || RoleChecker.is_admin?(user)) do
+    if user && (
+      Integer.to_string(user.id) == conn.params["id"] ||
+      RoleChecker.admin?(user)
+    )
+    do
       conn
     else
       conn
@@ -24,7 +31,7 @@ defmodule AppPhoenix.UserController do
 
   defp authorize_admin(conn, _) do
     user = get_session(conn, :current_user)
-    if user && RoleChecker.is_admin?(user) do
+    if user && RoleChecker.admin?(user) do
       conn
     else
       conn
@@ -87,7 +94,8 @@ defmodule AppPhoenix.UserController do
           |> put_flash(:info, "User updated successfully.")
           |> redirect(to: user_path(conn, :show, user))
       {:error, changeset} ->
-        render(conn, "edit.html", user: user, changeset: changeset, roles: roles)
+        conn
+          |> render("edit.html", user: user, changeset: changeset, roles: roles)
     end
   end
 

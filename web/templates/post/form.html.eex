@@ -13,7 +13,7 @@
 
   <div class="form-group">
     <%= label f, :body, class: "control-label" %>
-    <%= textarea f, :body, class: "form-control" %>
+    <%= textarea f, :body, class: "form-control", id: "body-editor" %>
     <%= error_tag f, :body %>
   </div>
 
@@ -21,3 +21,4 @@
     <%= submit "Submit", class: "btn btn-primary" %>
   </div>
 <% end %>
+<script>var simplemde = new SimpleMDE();</script>

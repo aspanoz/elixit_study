@@ -1,4 +1,7 @@
 defmodule AppPhoenix.ErrorView do
+  @moduledoc '''
+    web/views/error_view
+  '''
   use AppPhoenix.Web, :view
 
   def render("404.html", _assigns) do

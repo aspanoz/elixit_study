@@ -9,6 +9,7 @@
 
     <title>Hello AppPhoenix!</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+    <%= raw render_existing view_module(@conn), "scripts.html", assigns %>
   </head>
 
   <body>

@@ -1,4 +1,7 @@
 defmodule AppPhoenix.SessionController do
+  @moduledoc '''
+    Session controller
+  '''
 
   use AppPhoenix.Web, :controller
   import Comeonin.Bcrypt, only: [checkpw: 2]
@@ -15,7 +18,9 @@ defmodule AppPhoenix.SessionController do
   @doc """
     Login action. If no user, call fail function
   """
-  def create(conn, %{"user" => %{"username" => username, "password" => password}})
+  def create(
+      conn, %{"user" => %{"username" => username, "password" => password}}
+    )
     when not is_nil(username) and not is_nil(password)
   do
     user = Repo.get_by(User, username: username)
@@ -53,7 +58,10 @@ defmodule AppPhoenix.SessionController do
   defp sign_in(user, password, conn) do
     if checkpw(password, user.password_digest) do
       conn
-        |> put_session(:current_user, %{id: user.id, username: user.username, role_id: user.role_id})
+        |> put_session(
+          :current_user,
+          %{id: user.id, username: user.username, role_id: user.role_id}
+        )
         |> put_flash(:info, "Sign in successful!")
         |> redirect(to: page_path(conn, :index))
     else

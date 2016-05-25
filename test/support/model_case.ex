@@ -46,7 +46,7 @@ defmodule AppPhoenix.ModelCase do
 
   You could then write your assertion like:
 
-      assert {:password, "is unsafe"} in errors_on(%User{}, %{password: "password"})
+assert {:password, "is unsafe"} in errors_on(%User{}, %{password: "password"})
 
   You can also create the changeset manually and retrieve the errors
   field directly:

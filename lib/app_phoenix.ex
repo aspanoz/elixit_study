@@ -1,4 +1,7 @@
 defmodule AppPhoenix do
+  @moduledoc '''
+    AppPhoenix
+  '''
   use Application
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html

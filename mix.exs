@@ -57,7 +57,9 @@ defmodule AppPhoenix.Mixfile do
       {:gettext, "~> 0.9"},
       {:cowboy, "~> 1.0"},
       {:comeonin, "~> 2.4"},
-      {:ex_machina, "~> 0.6.1"}
+      {:ex_machina, "~> 0.6.1"},
+      {:dogma, "~> 0.1", only: :dev},
+      {:earmark, "~> 0.2.1"}
     ]
   end
 

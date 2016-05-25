@@ -1,21 +1,20 @@
 defmodule AppPhoenix.PostController do
+  @moduledoc '''
+    Post controller
+  '''
   use AppPhoenix.Web, :controller
 
   alias AppPhoenix.Post
   alias AppPhoenix.User
   alias AppPhoenix.RoleChecker
   alias AppPhoenix.TextProcessor
-  alias AppPhoenix.MyDebuger
+  # alias AppPhoenix.MyDebuger
 
   plug :scrub_params, "post" when action in [:create, :update]
   plug :assign_user
   plug :authorize_user when action in [:new, :create, :update, :edit, :delete]
 
 
-    # Plug for nested resource (post under users) support user_post_path helper.
-    # By using the assign function on our connection object,
-    # we’ve exposed a variable that we can work with in our templates.
-    # https://medium.com/@diamondgfx/writing-a-blog-engine-in-phoenix-part-2-authorization-814c06fa7c0#.9e50f4py1
   defp assign_user(conn, _opts) do
     case conn.params do
       %{"user_id" => user_id} ->
@@ -40,7 +39,11 @@ defmodule AppPhoenix.PostController do
   defp authorize_user(conn, _) do
     user = get_session(conn, :current_user)
     # MyDebuger.echo(user, "User: ")
-    if user && (Integer.to_string(user.id) == conn.params["user_id"] || RoleChecker.is_admin?(user)) do
+    if user && (
+      Integer.to_string(user.id) == conn.params["user_id"] ||
+      RoleChecker.admin?(user)
+      )
+    do
       conn
     else
       conn
@@ -93,7 +96,9 @@ defmodule AppPhoenix.PostController do
   def edit(conn, %{"id" => id}) do
     post = Repo.get!(assoc(conn.assigns[:user], :posts), id)
     changeset = Post.changeset(post)
-    render(conn, "edit.html", post: post, changeset: changeset)
+    conn
+      |> assign(:markdown, true)
+      |> render("edit.html", post: post, changeset: changeset)
   end
 
 
@@ -104,7 +109,9 @@ defmodule AppPhoenix.PostController do
       {:ok, post} ->
         conn
           |> put_flash(:info, "Post updated successfully.")
-          |> redirect(to: user_post_path(conn, :show, conn.assigns[:user], post))
+          |> redirect(
+            to: user_post_path(conn, :show, conn.assigns[:user], post)
+          )
       {:error, changeset} ->
         render(conn, "edit.html", post: post, changeset: changeset)
     end

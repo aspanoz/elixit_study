@@ -1,4 +1,7 @@
 defmodule AppPhoenix.User do
+  @moduledoc '''
+    User model
+  '''
   use AppPhoenix.Web, :model
 
   import Comeonin.Bcrypt, only: [hashpwsalt: 1]

@@ -1,4 +1,7 @@
 defmodule AppPhoenix.Router do
+  @moduledoc '''
+    web/router
+  '''
   use AppPhoenix.Web, :router
 
   pipeline :browser do

@@ -1,5 +1,7 @@
 defmodule AppPhoenix.TextProcessor do
-  # тут планируется быть разбор текста на состоявляющие
+  @moduledoc '''
+    тут планируется быть разбор текста на состоявляющие
+  '''
 
   def parse_post(body) do
     body

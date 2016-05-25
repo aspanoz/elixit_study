@@ -12,16 +12,12 @@ defmodule AppPhoenix.PostControllerTest do
 
   setup do
     role = Factory.create(:role)
-
     user = Factory.create(:user, role: role)
     other_user = Factory.create(:user, role: role)
-
     admin = Factory.create(:user, role: Factory.create(:role, admin: true))
-
     post = Factory.create(:post, user: user)
+    conn = conn |> login_user(user)
 
-    conn = conn()
-      |> login_user(user)
     {
       :ok,
       conn: conn,
@@ -33,9 +29,12 @@ defmodule AppPhoenix.PostControllerTest do
   end
 
   defp login_user(conn, user) do
-    post conn, session_path(conn, :create), user: %{username: user.username, password: user.password}
+    post(
+      conn,
+      session_path(conn, :create),
+      user: %{username: user.username, password: user.password}
+    )
   end
-
 
   @tag :post_controller
   test "lists all entries on index", %{conn: conn, user: user} do
@@ -51,12 +50,15 @@ defmodule AppPhoenix.PostControllerTest do
     assert html_response(conn, 200) =~ "New post"
   end
 
-
   @tag :post_controller
   test "creates resource and redirects when data is valid",
     %{conn: conn, user: user}
   do
-    conn = post conn, user_post_path(conn, :create, user), post: @valid_attrs
+    conn = post(
+      conn,
+      user_post_path(conn, :create, user),
+      post: @valid_attrs
+    )
     assert redirected_to(conn) == user_post_path(conn, :index, user)
     assert Repo.get_by(assoc(user, :posts), @valid_attrs)
   end
@@ -66,7 +68,11 @@ defmodule AppPhoenix.PostControllerTest do
   test "does not create resource and renders errors when data is invalid",
     %{conn: conn, user: user}
   do
-    conn = post conn, user_post_path(conn, :create, user), post: @invalid_attrs
+    conn = post(
+      conn,
+      user_post_path(conn, :create, user),
+      post: @invalid_attrs
+    )
     assert html_response(conn, 200) =~ "New post"
   end
 
@@ -94,17 +100,25 @@ defmodule AppPhoenix.PostControllerTest do
   test "updates chosen resource and redirects when data is valid",
     %{conn: conn, user: user, post: post}
   do
-    conn = put conn, user_post_path(conn, :update, user, post), post: @valid_attrs
+    conn = put(
+      conn,
+      user_post_path(conn, :update, user, post),
+      post: @valid_attrs
+    )
     assert redirected_to(conn) == user_post_path(conn, :show, user, post)
     assert Repo.get_by(Post, @valid_attrs)
   end
 
 
   @tag :post_controller
-  test "does not update chosen resource and renders errors when data is invalid",
+  test "does not update and renders errors when data is invalid",
     %{conn: conn, user: user, post: post}
   do
-    conn = put conn, user_post_path(conn, :update, user, post), post: %{"body" => nil}
+    conn = put(
+      conn,
+      user_post_path(conn, :update, user, post),
+      post: %{"body" => nil}
+    )
     assert html_response(conn, 200) =~ "Edit post"
   end
 
@@ -131,7 +145,8 @@ defmodule AppPhoenix.PostControllerTest do
     %{conn: conn, post: post, other_user: other_user}
   do
     conn = get conn, user_post_path(conn, :edit, other_user, post)
-    assert get_flash(conn, :error) == "You are not authorized to modify that post!"
+    flash = "You are not authorized to modify that post!"
+    assert get_flash(conn, :error) == flash
     assert redirected_to(conn) == page_path(conn, :index)
     assert conn.halted
   end
@@ -141,8 +156,13 @@ defmodule AppPhoenix.PostControllerTest do
   test "redirects when trying to update a post for a different user",
     %{conn: conn, post: post, other_user: other_user}
   do
-    conn = put conn, user_post_path(conn, :update, other_user, post), %{"post" => @valid_attrs}
-    assert get_flash(conn, :error) == "You are not authorized to modify that post!"
+    conn = put(
+      conn,
+      user_post_path(conn, :update, other_user, post),
+      %{"post" => @valid_attrs}
+    )
+    flash = "You are not authorized to modify that post!"
+    assert get_flash(conn, :error) == flash
     assert redirected_to(conn) == page_path(conn, :index)
     assert conn.halted
   end
@@ -152,7 +172,8 @@ defmodule AppPhoenix.PostControllerTest do
     %{conn: conn, post: post, other_user: other_user}
   do
     conn = delete conn, user_post_path(conn, :delete, other_user, post)
-    assert get_flash(conn, :error) == "You are not authorized to modify that post!"
+    flash = "You are not authorized to modify that post!"
+    assert get_flash(conn, :error) == flash
     assert redirected_to(conn) == page_path(conn, :index)
     assert conn.halted
   end
@@ -161,30 +182,33 @@ defmodule AppPhoenix.PostControllerTest do
   test "renders form for editing chosen resource when logged in as admin",
     %{conn: conn, user: user, post: post, admin: admin}
   do
-    conn =
-      login_user(conn, admin)
-        |> get(user_post_path(conn, :edit, user, post))
+    conn = conn
+      |> login_user(admin)
+      |> get(user_post_path(conn, :edit, user, post))
     assert html_response(conn, 200) =~ "Edit post"
   end
 
   @tag :post_controller
-  test "updates chosen resource and redirects when data is valid when logged in as admin",
+  test "updates and redirects when data is valid when logged in as admin",
     %{conn: conn, user: user, post: post, admin: admin}
   do
-    conn =
-      login_user(conn, admin)
-        |> put(user_post_path(conn, :update, user, post), post: @valid_attrs)
+    conn = conn
+      |> login_user(admin)
+      |> put(user_post_path(conn, :update, user, post), post: @valid_attrs)
     assert redirected_to(conn) == user_post_path(conn, :show, user, post)
     assert Repo.get_by(Post, @valid_attrs)
   end
 
   @tag :post_controller
-  test "does not update chosen resource and renders errors when data is invalid when logged in as admin",
+  test "not update and renders errors when data is invalid when admin",
     %{conn: conn, user: user, post: post, admin: admin}
   do
-    conn =
-      login_user(conn, admin)
-        |> put(user_post_path(conn, :update, user, post), post: %{"body" => nil})
+    conn = conn
+      |> login_user(admin)
+      |> put(
+        user_post_path(conn, :update, user, post),
+        post: %{"body" => nil}
+      )
     assert html_response(conn, 200) =~ "Edit post"
   end
 
@@ -192,9 +216,9 @@ defmodule AppPhoenix.PostControllerTest do
   test "deletes chosen resource when logged in as admin",
     %{conn: conn, user: user, post: post, admin: admin}
   do
-    conn =
-      login_user(conn, admin)
-        |> delete(user_post_path(conn, :delete, user, post))
+    conn = conn
+      |> login_user(admin)
+      |> delete(user_post_path(conn, :delete, user, post))
     assert redirected_to(conn) == user_post_path(conn, :index, user)
     refute Repo.get(Post, post.id)
   end

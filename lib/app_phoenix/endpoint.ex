@@ -1,4 +1,7 @@
 defmodule AppPhoenix.Endpoint do
+  @moduledoc '''
+    Endpoint module
+  '''
   use Phoenix.Endpoint, otp_app: :app_phoenix
 
   socket "/socket", AppPhoenix.UserSocket

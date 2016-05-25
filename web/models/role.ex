@@ -1,4 +1,7 @@
 defmodule AppPhoenix.Role do
+  @moduledoc '''
+    Role model
+  '''
   use AppPhoenix.Web, :model
 
   schema "roles" do

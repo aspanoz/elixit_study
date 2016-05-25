@@ -22,8 +22,14 @@ defmodule AppPhoenix.SessionControllerTest do
 
 
   @tag :session_controller
-  test "creates a new user session for a valid user", %{conn: conn, user: user} do
-    conn = post conn, session_path(conn, :create), user: %{username: user.username, password: user.password}
+  test "creates a new user session for a valid user",
+    %{conn: conn, user: user}
+  do
+    conn = post(
+      conn,
+      session_path(conn, :create),
+      user: %{username: user.username, password: user.password}
+    )
     assert get_session(conn, :current_user)
     assert get_flash(conn, :info) == "Sign in successful!"
     assert redirected_to(conn) == page_path(conn, :index)
@@ -31,20 +37,32 @@ defmodule AppPhoenix.SessionControllerTest do
 
 
   @tag :session_controller
-  test "does not create a session with a bad login", %{conn: conn, user: user} do
-    conn = post conn, session_path(conn, :create), user: %{username: user.username, password: "wrong"}
-
+  test "does not create a session with a bad login",
+    %{conn: conn, user: user}
+  do
+    conn = post(
+      conn,
+      session_path(conn, :create),
+      user: %{username: user.username, password: "wrong"}
+    )
     refute get_session(conn, :current_user)
-    assert get_flash(conn, :error) == "Invalid username/password combination!"
+    flash = "Invalid username/password combination!"
+    assert get_flash(conn, :error) == flash
     assert redirected_to(conn) == page_path(conn, :index)
   end
 
 
   @tag :session_controller
-  test "does not create a session if user does not exist", %{conn: conn} do
-    conn = post conn, session_path(conn, :create), user: %{username: "foo", password: "wrong"}
-
-    assert get_flash(conn, :error) == "Invalid username/password combination!"
+  test "does not create a session if user does not exist",
+    %{conn: conn}
+  do
+    conn = post(
+      conn,
+      session_path(conn, :create),
+      user: %{username: "foo", password: "wrong"}
+    )
+    flash = "Invalid username/password combination!"
+    assert get_flash(conn, :error) == flash
     assert redirected_to(conn) == page_path(conn, :index)
   end
 

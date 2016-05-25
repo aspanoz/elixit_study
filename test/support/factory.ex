@@ -1,6 +1,9 @@
 defmodule AppPhoenix.Factory do
+  @moduledoc '''
+    test helper factory
+  '''
   use ExMachina.Ecto, repo: AppPhoenix.Repo
-  
+
   alias AppPhoenix.Role
   alias AppPhoenix.User
   alias AppPhoenix.Post
