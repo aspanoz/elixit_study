@@ -22,10 +22,25 @@ defmodule AppPhoenix.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
-    resources "/sessions", SessionController, only: [:new, :create, :delete]
+
+    resources(
+      "/sessions",
+      SessionController,
+      only: [:new, :create, :delete]
+    )
+
     resources "/users", UserController do
       resources "/posts", PostController
     end
+
+    resources "/posts", PostController, only: [] do
+      resources(
+        "/comments",
+        CommentController,
+        only: [:create, :delete, :update]
+      )
+    end
+
   end
 
 end

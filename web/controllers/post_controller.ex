@@ -8,12 +8,13 @@ defmodule AppPhoenix.PostController do
   alias AppPhoenix.User
   alias AppPhoenix.RoleChecker
   alias AppPhoenix.TextProcessor
-  # alias AppPhoenix.MyDebuger
+  alias AppPhoenix.Comment
+  alias AppPhoenix.MyDebuger
 
   plug :scrub_params, "post" when action in [:create, :update]
   plug :assign_user
   plug :authorize_user when action in [:new, :create, :update, :edit, :delete]
-
+  plug :set_authorization_flag when action in [:show]
 
   defp assign_user(conn, _opts) do
     case conn.params do
@@ -33,24 +34,30 @@ defmodule AppPhoenix.PostController do
       |> halt
   end
 
+  defp authorized_user?(conn) do
+    user = get_session(conn, :current_user)
+    (user && (
+      Integer.to_string(user.id) == conn.params["user_id"]
+      || RoleChecker.admin?(user)
+    ))
+  end
 
     # Plug for access rights to CUD-action, action list in plug defenition
     # Only owner post user can do somethink with it
-  defp authorize_user(conn, _) do
-    user = get_session(conn, :current_user)
-    # MyDebuger.echo(user, "User: ")
-    if user && (
-      Integer.to_string(user.id) == conn.params["user_id"] ||
-      RoleChecker.admin?(user)
-      )
-    do
+  defp authorize_user(conn, _opts) do
+    if authorized_user?(conn) do
       conn
     else
       conn
         |> put_flash(:error, "You are not authorized to modify that post!")
         |> redirect(to: page_path(conn, :index))
-        |> halt()
+        |> halt
     end
+  end
+
+
+  defp set_authorization_flag(conn, _opts) do
+    assign(conn, :author_or_admin, authorized_user?(conn))
   end
 
 
@@ -86,10 +93,17 @@ defmodule AppPhoenix.PostController do
 
 
   def show(conn, %{"id" => id}) do
-    post = Repo.get!(assoc(conn.assigns[:user], :posts), id)
+    post = conn.assigns[:user]
+      |> assoc(:posts)
+      |> Repo.get!(id)
+      |> Repo.preload(:comments)
+    comment_changeset = post
+      |> build_assoc(:comments)
+      |> Comment.changeset()
+      # |> MyDebuger.echo_bypass
     conn
       |> assign(:parse_post, TextProcessor.parse_post(post.body))
-      |> render("show.html", post: post)
+      |> render("show.html", post: post, comment_changeset: comment_changeset)
   end
 
 

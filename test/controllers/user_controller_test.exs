@@ -48,13 +48,13 @@ defmodule AppPhoenix.UserControllerTest do
   end
 
 
-  @tag :user_controller
+  @tag :controller_user
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, user_path(conn, :index)
     assert html_response(conn, 200) =~ "Listing users"
   end
 
-  @tag :user_controller
+  @tag :controller_user
   @tag :admin
   test "renders form for new resources",
     %{conn: conn, admin_user: admin_user}
@@ -64,7 +64,7 @@ defmodule AppPhoenix.UserControllerTest do
     assert html_response(conn, 200) =~ "New user"
   end
 
-  @tag :user_controller
+  @tag :controller_user
   @tag :admin
   test "redirects from new form when not admin",
     %{conn: conn, nonadmin_user: nonadmin_user}
@@ -77,7 +77,7 @@ defmodule AppPhoenix.UserControllerTest do
     assert conn.halted
   end
 
-  @tag :user_controller
+  @tag :controller_user
   @tag :admin
   test "creates resource and redirects when data is valid",
     %{conn: conn, user_role: user_role, admin_user: admin_user}
@@ -92,7 +92,7 @@ defmodule AppPhoenix.UserControllerTest do
     assert Repo.get_by(User, @valid_attrs)
   end
 
-  @tag :user_controller
+  @tag :controller_user
   @tag :admin
   test "redirects from creating user when not admin",
     %{conn: conn, user_role: user_role, nonadmin_user: nonadmin_user}
@@ -109,7 +109,7 @@ defmodule AppPhoenix.UserControllerTest do
     assert conn.halted
   end
 
-  @tag :user_controller
+  @tag :controller_user
   @tag :admin
   test "does not create resource and renders errors when data is invalid",
     %{conn: conn, admin_user: admin_user}
@@ -119,21 +119,22 @@ defmodule AppPhoenix.UserControllerTest do
     assert html_response(conn, 200) =~ "New user"
   end
 
-  @tag :user_controller
+  @tag :controller_user
   test "shows chosen resource", %{conn: conn} do
     user = Repo.insert! %User{}
     conn = get conn, user_path(conn, :show, user)
     assert html_response(conn, 200) =~ "Show user"
   end
 
-  @tag :user_controller
+
+  @tag :controller_user
   test "renders page not found when id is nonexistent", %{conn: conn} do
     assert_error_sent 404, fn ->
       get conn, user_path(conn, :show, -1)
     end
   end
 
-  @tag :user_controller
+  @tag :controller_user
   @tag :admin
   test "renders form for editing when logged in as that user",
     %{conn: conn, nonadmin_user: nonadmin_user}
@@ -143,7 +144,7 @@ defmodule AppPhoenix.UserControllerTest do
     assert html_response(conn, 200) =~ "Edit user"
   end
 
-  @tag :user_controller
+  @tag :controller_user
   @tag :admin
   test "renders form for editing chosen resource when logged in as an admin",
     %{conn: conn, admin_user: admin_user, nonadmin_user: nonadmin_user}
@@ -155,7 +156,7 @@ defmodule AppPhoenix.UserControllerTest do
     assert html_response(conn, 200) =~ "Edit user"
   end
 
-  @tag :user_controller
+  @tag :controller_user
   @tag :admin
   test "redirects away from editing when logged in as a different user",
     %{conn: conn, nonadmin_user: nonadmin_user, admin_user: admin_user}
@@ -168,7 +169,7 @@ defmodule AppPhoenix.UserControllerTest do
     assert conn.halted
   end
 
-  @tag :user_controller
+  @tag :controller_user
   @tag :admin
   test "update and redirect when data is valid when logged in as that user",
     %{conn: conn, nonadmin_user: nonadmin_user}
@@ -183,7 +184,7 @@ defmodule AppPhoenix.UserControllerTest do
     assert Repo.get_by(User, @valid_attrs)
   end
 
-  @tag :user_controller
+  @tag :controller_user
   @tag :admin
   test "updates and redirects when data is valid when logged in as an admin",
     %{conn: conn, admin_user: admin_user}
@@ -198,7 +199,7 @@ defmodule AppPhoenix.UserControllerTest do
     assert Repo.get_by(User, @valid_attrs)
   end
 
-  @tag :user_controller
+  @tag :controller_user
   @tag :admin
   test "does not update chosen resource when logged in as different user",
     %{conn: conn, nonadmin_user: nonadmin_user, admin_user: admin_user}
@@ -215,7 +216,7 @@ defmodule AppPhoenix.UserControllerTest do
     assert conn.halted
   end
 
-  @tag :user_controller
+  @tag :controller_user
   @tag :admin
   test "does not update and renders errors when data is invalid",
     %{conn: conn, nonadmin_user: nonadmin_user}
@@ -229,7 +230,7 @@ defmodule AppPhoenix.UserControllerTest do
     assert html_response(conn, 200) =~ "Edit user"
   end
 
-  @tag :user_controller
+  @tag :controller_user
   @tag :admin
   test "deletes chosen resource when logged in as that user",
     %{conn: conn, some_user: some_user}
@@ -241,7 +242,7 @@ defmodule AppPhoenix.UserControllerTest do
     refute Repo.get(User, some_user.id)
   end
 
-  @tag :user_controller
+  @tag :controller_user
   @tag :admin
   test "deletes chosen resource when logged in as an admin",
     %{conn: conn, some_user: some_user, admin_user: admin_user}
@@ -253,7 +254,7 @@ defmodule AppPhoenix.UserControllerTest do
     refute Repo.get(User, some_user.id)
   end
 
-  @tag :user_controller
+  @tag :controller_user
   @tag :admin
   test "redirects away from deleting when logged in as a different user",
      %{conn: conn, some_user: some_user, nonadmin_user: nonadmin_user}

@@ -7,6 +7,7 @@ defmodule AppPhoenix.Factory do
   alias AppPhoenix.Role
   alias AppPhoenix.User
   alias AppPhoenix.Post
+  alias AppPhoenix.Comment
 
   def factory(:role) do
     %Role{
@@ -31,6 +32,15 @@ defmodule AppPhoenix.Factory do
       title: "Some Post",
       body: "And the body of some post",
       user: build(:user)
+    }
+  end
+
+  def factory(:comment) do
+    %Comment{
+      author: "Test User",
+      body: "This is a sample comment",
+      approved: false,
+      post: build(:post)
     }
   end
 

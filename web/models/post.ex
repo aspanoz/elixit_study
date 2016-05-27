@@ -10,6 +10,7 @@ defmodule AppPhoenix.Post do
     field :body, :string
     # FK link
     belongs_to :user, AppPhoenix.User
+    has_many :comments, AppPhoenix.Comment
     # created/updated timestamps
     timestamps
   end
