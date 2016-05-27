@@ -34,7 +34,39 @@ defmodule AppPhoenix.CommentController do
     end
   end
 
-  def update(conn, _), do: conn
-  def delete(conn, _), do: conn
+
+  def update(
+    conn,
+    %{"id" => id, "post_id" => post_id, "comment" => comment_params}
+  ) do
+    post = Post
+      |> Repo.get!(post_id)
+      |> Repo.preload(:user)
+    comment = Repo.get!(Comment, id)
+    changeset = Comment.changeset(comment, comment_params)
+
+    case Repo.update(changeset) do
+      {:ok, _} ->
+        conn
+          |> put_flash(:info, "Comment updated successfully.")
+          |> redirect(to: user_post_path(conn, :show, post.user, post))
+      {:error, _} ->
+        conn
+          |> put_flash(:info, "Failed to update comment!")
+          |> redirect(to: user_post_path(conn, :show, post.user, post))
+    end
+  end
+
+  def delete(conn, %{"id" => id, "post_id" => post_id}) do
+    post = Post
+      |> Repo.get!(post_id)
+      |> Repo.preload(:user)
+    Comment
+      |> Repo.get!(id)
+      |> Repo.delete!
+    conn
+      |> put_flash(:info, "Deleted comment!")
+      |> redirect(to: user_post_path(conn, :show, post.user, post))
+  end
 
 end
