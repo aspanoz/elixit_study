@@ -6,8 +6,36 @@ defmodule AppPhoenix.CommentController do
 
   alias AppPhoenix.Comment
   alias AppPhoenix.Post
+  alias AppPhoenix.RoleChecker
 
   plug :scrub_params, "comment" when action in [:create, :update]
+  plug :set_post_and_authorize_user when action in [:update, :delete]
+
+
+  defp set_post(conn) do
+    post = Post
+      |> Repo.get!(conn.params["post_id"])
+      |> Repo.preload(:user)
+    assign(conn, :post, post)
+  end
+
+  defp set_post_and_authorize_user(conn, _opts) do
+    conn = set_post(conn)
+    if authorized_user?(conn) do
+      conn
+    else
+      conn
+        |> put_flash(:error, "You are not authorized to modify that comment!")
+        |> redirect(to: page_path(conn, :index))
+        |> halt
+    end
+  end
+
+  defp authorized_user?(conn) do
+    user = get_session(conn, :current_user)
+    post = conn.assigns[:post]
+    ((user && user.id == post.user_id) || RoleChecker.admin?(user))
+  end
 
   def create(conn, %{"comment" => comment_params, "post_id" => post_id}) do
     post = Post

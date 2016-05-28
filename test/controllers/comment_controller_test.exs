@@ -18,22 +18,22 @@ defmodule AppPhoenix.CommentControllerTest do
   end
 
   defp login_user(conn, user) do
-    post(
-      conn,
-      session_path(conn, :create),
-      user: %{username: user.username, password: user.password}
-    )
+    conn
+      |> post(
+        session_path(conn, :create),
+        user: %{username: user.username, password: user.password}
+      )
   end
 
   @tag :controller_comment
   test "creates resource and redirects when data is valid",
     %{conn: conn, post: post}
   do
-    conn = post(
-      conn,
-      post_comment_path(conn, :create, post),
-      comment: @valid_attrs
-    )
+    conn = conn
+      |> post(
+        post_comment_path(conn, :create, post),
+        comment: @valid_attrs
+      )
     assert redirected_to(conn) == user_post_path(conn, :show, post.user, post)
     assert Repo.get_by(assoc(post, :comments), @valid_attrs)
   end
@@ -48,11 +48,26 @@ defmodule AppPhoenix.CommentControllerTest do
     assert html_response(conn, 200) =~ "Oops, something went wrong"
   end
 
+
   @tag :controller_comment
-  test "deletes the comment", %{conn: conn, post: post, comment: comment} do
-    conn = delete(conn, post_comment_path(conn, :delete, post, comment))
+  test "deletes the comment when logged in as an authorized user",
+    %{conn: conn, user: user, post: post, comment: comment}
+  do
+    conn = conn
+      |> login_user(user)
+      |> delete(post_comment_path(conn, :delete, post, comment))
     assert redirected_to(conn) == user_post_path(conn, :show, post.user, post)
     refute Repo.get(Comment, comment.id)
+  end
+
+  @tag :controller_comment
+  test "does not delete the comment when not logged in as an authorized user",
+    %{conn: conn, post: post, comment: comment}
+  do
+    conn = conn
+      |> delete(post_comment_path(conn, :delete, post, comment))
+    assert redirected_to(conn) == page_path(conn, :index)
+    assert Repo.get(Comment, comment.id)
   end
 
   @tag :controller_comment
@@ -67,6 +82,19 @@ defmodule AppPhoenix.CommentControllerTest do
       )
     assert redirected_to(conn) == user_post_path(conn, :show, user, post)
     assert Repo.get_by(Comment, %{id: comment.id, approved: true})
+  end
+
+  @tag :controller_comment
+  test "does not update the comment when not logged in as an authorized user",
+    %{conn: conn, post: post, comment: comment}
+  do
+    conn = conn
+      |> put(
+        post_comment_path(conn, :update, post, comment),
+        comment: %{"approved" => true}
+      )
+    assert redirected_to(conn) == page_path(conn, :index)
+    refute Repo.get_by(Comment, %{id: comment.id, approved: true})
   end
 
 end
