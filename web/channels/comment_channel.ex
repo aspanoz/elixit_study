@@ -1,4 +1,7 @@
 defmodule AppPhoenix.CommentChannel do
+  @moduledoc '''
+    Comment channel
+  '''
   use AppPhoenix.Web, :channel
 
   def join("comments:lobby", payload, socket) do
