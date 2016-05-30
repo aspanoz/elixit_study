@@ -4,6 +4,8 @@ defmodule AppPhoenix.User do
   '''
   use AppPhoenix.Web, :model
 
+  alias AppPhoenix.MyDebuger
+
   import Comeonin.Bcrypt, only: [hashpwsalt: 1]
 
 
@@ -30,16 +32,22 @@ defmodule AppPhoenix.User do
     model
       |> cast(params, @required_fields, @optional_fields)
       |> hash_password
+      # |> password_change(get_change(model, :password))
   end
 
 
-  defp hash_password(changeset) do
-    if password = get_change(changeset, :password) do
-      changeset
-        |> put_change(:password_digest, hashpwsalt(password))
-    else
-      changeset
-    end
+  defp hash_password(model) do
+    model
+      |> password_change(get_change(model, :password))
+  end
+
+
+  defp password_change(model, password) when is_nil(password) do
+    model
+  end
+  defp password_change(model, password) do
+    model
+      |> put_change(:password_digest, hashpwsalt(password))
   end
 
 

@@ -2,9 +2,15 @@ defmodule AppPhoenix.CommentChannelTest do
   use AppPhoenix.ChannelCase
 
   alias AppPhoenix.CommentChannel
+  alias AppPhoenix.MyDebuger
 
   setup do
-    {:ok, _, socket} = socket("user_id", %{some: :assign})
+    {:ok, _, socket} =
+      # %{id: "user_id", assigns: %{some: :assign}}
+      # |> socket()
+
+    socket("user_id", %{some: :assign})
+      |> MyDebuger.echo_bypass
       |> subscribe_and_join(CommentChannel, "comments:lobby")
     {:ok, socket: socket}
   end

@@ -6,13 +6,13 @@ defmodule AppPhoenix.TextProcessor do
   def parse_post(body) do
     body
         # Многоточие
-      |> String.replace( ~r/\.{3,}/, " __MNOGOTOCHEE__ ")
+      |> String.replace(~r/\.{3,}/, " __MNOGOTOCHEE__ ")
         # Дефис
-      |> String.replace( ~r/\s-\s/, " __DEFIS__ ")
+      |> String.replace(~r/\s-\s/, " __DEFIS__ ")
         # Супервопрос ?! !?
-      |> String.replace( ~r/\?!|!\?/, " __SUPERVOPROS__ ")
+      |> String.replace(~r/\?!|!\?/, " __SUPERVOPROS__ ")
         # Знаки припинания и пугктуации
-      |> String.replace( ~r/([,?:;!.])/, " __\\1__ ", insert_replaced: 1)
+      |> String.replace(~r/([,?:;!.])/, " __\\1__ ", insert_replaced: 1)
       |> String.split()
       |> Stream.map(fn (i) -> do_word(i) end)
       |> Enum.to_list()
