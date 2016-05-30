@@ -3,9 +3,10 @@ defmodule AppPhoenix.LayoutView do
     web/views/layout_view
   '''
   use AppPhoenix.Web, :view
+  import Plug.Conn, only: [get_session: 2]
 
   def current_user(conn) do
-    Plug.Conn.get_session(conn, :current_user)
+    get_session(conn, :current_user)
   end
 
 end
