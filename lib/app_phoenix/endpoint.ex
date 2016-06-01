@@ -6,16 +6,14 @@ defmodule AppPhoenix.Endpoint do
 
   socket "/socket", AppPhoenix.UserSocket
 
-  # Serve at "/" the static files from "priv/static" directory.
-  #
-  # You should set gzip to true if you are running phoenix.digest
-  # when deploying your static files in production.
   plug Plug.Static,
     at: "/", from: :app_phoenix, gzip: false,
     only: ~w(css fonts images js favicon.ico robots.txt)
 
-  # Code reloading can be explicitly enabled under the
-  # :code_reloader configuration of your endpoint.
+  if Application.get_env(:app_phoenix, :sql_sandbox) do
+    plug Phoenix.Ecto.SQL.Sandbox
+  end
+
   if code_reloading? do
     socket "/phoenix/live_reload/socket", Phoenix.LiveReloader.Socket
     plug Phoenix.LiveReloader

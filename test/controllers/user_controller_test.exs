@@ -14,7 +14,10 @@ defmodule AppPhoenix.UserControllerTest do
     email: "test@test.com",
     username: "test"
   }
-  @invalid_attrs %{}
+  @invalid_attrs %{
+    email: "testtest.com",
+    username: "tt"
+  }
 
   setup do
     # create simple user

@@ -51,7 +51,8 @@ defmodule AppPhoenix.Mixfile do
     [
       {:phoenix, "~> 1.1.4"},
       {:mariaex, ">= 0.0.0"},
-      {:phoenix_ecto, "~> 2.0"},
+      #{:phoenix_ecto, "~> 2.0"},
+      {:phoenix_ecto, "~> 3.0.0-beta"},
       {:phoenix_html, "~> 2.4"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.9"},
@@ -60,6 +61,7 @@ defmodule AppPhoenix.Mixfile do
       {:ex_machina, "~> 0.6.1"},
       {:dogma, "~> 0.1", only: :dev},
       {:credo, "~> 0.3", only: [:dev, :test]},
+      {:wallaby, "~> 0.5.0", only: [:dev, :test]},
       {:earmark, "~> 0.2.1"}
     ]
   end
