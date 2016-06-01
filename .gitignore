@@ -5,3 +5,4 @@
 /*.ez
 /.lvimrc
 /*.lock
+node_modules/
