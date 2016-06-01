@@ -14,19 +14,16 @@ defmodule AppPhoenix.UserControllerTest do
     email: "test@test.com",
     username: "test"
   }
-  @invalid_attrs %{
-    email: "testtest.com",
-    username: "tt"
-  }
+  @invalid_attrs %{}
 
   setup do
     # create simple user
-    user_role = Factory.create(:role)
-    nonadmin_user = Factory.create(:user, role: user_role)
-    some_user = Factory.create(:user, role: user_role)
+    user_role = Factory.insert(:role)
+    nonadmin_user = Factory.insert(:user, role: user_role)
+    some_user = Factory.insert(:user, role: user_role)
     # create admin user
-    admin_role = Factory.create(:role, admin: true)
-    admin_user = Factory.create(:user, role: admin_role)
+    admin_role = Factory.insert(:role, admin: true)
+    admin_user = Factory.insert(:user, role: admin_role)
     {
       :ok,
       conn: conn(),
