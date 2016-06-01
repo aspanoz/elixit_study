@@ -49,20 +49,25 @@ defmodule AppPhoenix.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.1.4"},
-      {:mariaex, ">= 0.0.0"},
+      # {:phoenix, "~> 1.1.4"},
       #{:phoenix_ecto, "~> 2.0"},
-      {:phoenix_ecto, "~> 3.0.0-beta"},
+      {:phoenix, "~> 1.2.0-rc"},
+      {:phoenix_pubsub, "~> 1.0.0-rc"},
+      {:phoenix_ecto, "~> 3.0-rc"},
+
       {:phoenix_html, "~> 2.4"},
-      {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.9"},
       {:cowboy, "~> 1.0"},
-      {:comeonin, "~> 2.4"},
-      {:ex_machina, "~> 0.6.1"},
+      {:mariaex, ">= 0.0.0"}, # mysql client
+      {:comeonin, "~> 2.4"},  # authorize
+      {:earmark, "~> 0.2.1"}, # markdown?
+
+      {:phoenix_live_reload, "~> 1.0", only: :dev},
+      # {:ex_machina, "~> 0.6.1", only: :dev},
+      {:ex_machina, "~> 1.0.0-beta.1", github: "thoughtbot/ex_machina"},
       {:dogma, "~> 0.1", only: :dev},
       {:credo, "~> 0.3", only: [:dev, :test]},
-      {:wallaby, "~> 0.5.0", only: [:dev, :test]},
-      {:earmark, "~> 0.2.1"}
+      {:wallaby, "~> 0.5.0", only: [:dev, :test]}
     ]
   end
 
