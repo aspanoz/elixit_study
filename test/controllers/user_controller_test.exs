@@ -26,7 +26,7 @@ defmodule AppPhoenix.UserControllerTest do
     admin_user = Factory.insert(:user, role: admin_role)
     {
       :ok,
-      conn: conn(),
+      conn: build_conn(),
       admin_role: admin_role,
       user_role: user_role,
       some_user: some_user,
