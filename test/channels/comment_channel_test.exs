@@ -10,7 +10,7 @@ defmodule AppPhoenix.CommentChannelTest do
       # |> socket()
 
     socket("user_id", %{some: :assign})
-      |> MyDebuger.echo_bypass
+      # |> MyDebuger.echo_bypass
       |> subscribe_and_join(CommentChannel, "comments:lobby")
     {:ok, socket: socket}
   end

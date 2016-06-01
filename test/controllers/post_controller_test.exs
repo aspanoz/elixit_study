@@ -11,12 +11,12 @@ defmodule AppPhoenix.PostControllerTest do
   @invalid_attrs %{}
 
   setup do
-    role = Factory.create(:role)
-    user = Factory.create(:user, role: role)
-    other_user = Factory.create(:user, role: role)
-    admin = Factory.create(:user, role: Factory.create(:role, admin: true))
-    post = Factory.create(:post, user: user)
-    conn = conn |> login_user(user)
+    role = Factory.insert(:role)
+    user = Factory.insert(:user, role: role)
+    other_user = Factory.insert(:user, role: role)
+    admin = Factory.insert(:user, role: Factory.insert(:role, admin: true))
+    post = Factory.insert(:post, user: user)
+    conn = build_conn() |> login_user(user)
 
     {
       :ok,

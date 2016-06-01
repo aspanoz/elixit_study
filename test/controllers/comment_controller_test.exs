@@ -10,11 +10,17 @@ defmodule AppPhoenix.CommentControllerTest do
   @invalid_attrs %{}
 
   setup do
-    user = Factory.create(:user)
-    post = Factory.create(:post, user: user)
-    comment = Factory.create(:comment, post: post)
+    user = Factory.insert(:user)
+    post = Factory.insert(:post, user: user)
+    comment = Factory.insert(:comment, post: post)
 
-    {:ok, conn: conn, user: user, post: post, comment: comment}
+    {
+      :ok,
+      conn: build_conn,
+      user: user,
+      post: post,
+      comment: comment
+    }
   end
 
   defp login_user(conn, user) do

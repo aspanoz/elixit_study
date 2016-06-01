@@ -4,24 +4,24 @@ defmodule AppPhoenix.SessionControllerTest do
   alias AppPhoenix.Factory
 
   setup do
-    role = Factory.create(:role)
-    user = Factory.create(:user, role: role)
+    role = Factory.insert(:role)
+    user = Factory.insert(:user, role: role)
     {
       :ok,
       user: user,
-      conn: conn()
+      conn: build_conn()
     }
   end
 
 
-  @tag :session_controller
+  @tag :controller_session
   test "shows the login form", %{conn: conn} do
     conn = get conn, session_path(conn, :new)
     assert html_response(conn, 200) =~ "Login"
   end
 
 
-  @tag :session_controller
+  @tag :controller_session
   test "creates a new user session for a valid user",
     %{conn: conn, user: user}
   do
@@ -36,7 +36,7 @@ defmodule AppPhoenix.SessionControllerTest do
   end
 
 
-  @tag :session_controller
+  @tag :controller_session
   test "does not create a session with a bad login",
     %{conn: conn, user: user}
   do
@@ -52,7 +52,7 @@ defmodule AppPhoenix.SessionControllerTest do
   end
 
 
-  @tag :session_controller
+  @tag :controller_session
   test "does not create a session if user does not exist",
     %{conn: conn}
   do
@@ -67,7 +67,7 @@ defmodule AppPhoenix.SessionControllerTest do
   end
 
 
-  @tag :session_controller
+  @tag :controller_session
   test "deletes the user session", %{conn: conn, user: user} do
     conn = delete conn, session_path(conn, :delete, user)
     refute get_session(conn, :current_user)

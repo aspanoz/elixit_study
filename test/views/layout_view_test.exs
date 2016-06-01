@@ -6,28 +6,33 @@ defmodule AppPhoenix.LayoutViewTest do
 
 
   setup do
-    user = Factory.create(:user, role: Factory.create(:role))
-    {:ok, conn: conn(), user: user}
+    user = Factory.insert(:user, role: Factory.insert(:role))
+    {
+      :ok,
+      conn: build_conn(),
+      user: user
+    }
   end
 
 
-  @tag :layout_view
+  @tag :view_layout
   test "current user returns the user in the session",
     %{conn: conn, user: user}
   do
-    conn = post(
-      conn,
-      session_path(conn, :create),
-      user: %{username: user.username, password: user.password}
-    )
+    conn = conn
+      |> post(
+        session_path(conn, :create),
+        user: %{username: user.username, password: user.password}
+      )
     assert LayoutView.current_user(conn)
   end
 
-  @tag :layout_view
-  test "current user returns nothing if there is no user in the session",
-    %{user: user}
+  @tag :view_layout
+    test "current user returns nothing if there is no user in the session",
+  %{user: user}
   do
-    conn = delete conn, session_path(conn, :delete, user)
+    conn = build_conn
+      |> delete(session_path(build_conn, :delete, user))
     refute LayoutView.current_user(conn)
   end
 

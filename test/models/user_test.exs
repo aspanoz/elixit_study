@@ -19,7 +19,7 @@ defmodule AppPhoenix.UserTest do
   }
 
   setup do
-    role = Factory.create(:role)
+    role = Factory.insert(:role)
     {:ok, role: role}
   end
 

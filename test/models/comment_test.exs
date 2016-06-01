@@ -21,7 +21,7 @@ defmodule AppPhoenix.CommentTest do
 
   @tag :model_comment
   test "creates a comment associated with a post" do
-    comment = Factory.create(:comment)
+    comment = Factory.insert(:comment)
     assert comment.post_id
   end
 
