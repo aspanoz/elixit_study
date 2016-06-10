@@ -67,7 +67,7 @@ defmodule AppPhoenix.Mixfile do
       {:ex_machina, "~> 1.0.0-beta.1", github: "thoughtbot/ex_machina"},
       {:dogma, "~> 0.1", only: :dev},
       {:credo, "~> 0.3", only: [:dev, :test]},
-      {:wallaby, "~> 0.5.0", only: [:dev, :test]}
+      {:wallaby, "~> 0.5.0", only: [:dev, :test], github: "keathley/wallaby"}
     ]
   end
 
