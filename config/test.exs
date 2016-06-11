@@ -4,7 +4,6 @@ use Mix.Config
 # you can enable the server option below.
 config :app_phoenix, AppPhoenix.Endpoint,
   #http: [port: 4001],
-  #server: false
   server: true
 
 config :app_phoenix, :sql_sandbox, true

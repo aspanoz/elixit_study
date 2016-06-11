@@ -6,34 +6,39 @@ defmodule AppPhoenix.UserControllerTest do
   @tag :controller_user
   test "list admin user on /users/ page", %{session: session} do
     admin =
+      #MyDebuger.echo session.base_url
       session
-      |> set_window_size(1024, 900)
-      |> visit("http://127.0.0.1:4000/users/")
-      |> take_screenshot()
+      |> visit("http://localhost:4000/users/")
+      |> take_screenshot("_users")
+      #|> MyDebuger.echo_bypass
       |> find(".users")
       |> all(".user")
       |> List.first
-      #|> MyDebuger.echo_bypass
       |> find(".user-name")
       |> text
     assert admin == "admin"
   end
 
   @tag :controller_user
-  test "login and get form for new user", %{session: session} do
-    login_form =
+  test "login as admin", %{session: session} do
+    session
+    |> visit("http://localhost:4000/sessions/new")
+    |> find("#login-form")
+    |> take_screenshot("_form")
+    |> fill_in("user_username", with: "admin")
+    |> fill_in("user_password", with: "test")
+    |> take_screenshot("_form_fill")
+    |> click("#submit")
+    
+    login_success =
       session
-      |> set_window_size(1024, 900)
-      |> visit("http://127.0.0.1:4000/sessions/new")
-      |> find("#login-form")
-      |> fill_in("#user_username", with: "admin")
-      |> take_screenshot()
-      #|> all(".user")
-      #|> List.first
+      |> take_screenshot("_login")
+      |> find(".alert-info")
+      |> has_text?("Sign in successful!")
       #|> MyDebuger.echo_bypass
-      #|> find(".user-name")
-      #|> text
-    #assert admin == "admin"
+
+    assert get_current_path(session) == "/"
+    assert login_success == :true 
   end
 
 end
