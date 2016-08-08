@@ -17,6 +17,8 @@ config :app_phoenix, AppPhoenix.Endpoint,
     adapter: Phoenix.PubSub.PG2
   ]
 
+config :app_phoenix, ecto_repos: [AppPhoenix.Repo]
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

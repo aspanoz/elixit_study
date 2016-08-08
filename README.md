@@ -18,3 +18,25 @@ Ready to run in production? Please [check our deployment guides](http://www.phoe
   * Docs: http://hexdocs.pm/phoenix
   * Mailing list: http://groups.google.com/group/phoenix-talk
   * Source: https://github.com/phoenixframework/phoenix
+
+
+## Заметки на память
+
+### установить коректное окружение. я использую asdf
+
+### скачать зависимости
+  * mix deps.get
+  * npm install
+
+### скомпилировать проект
+  * node node_modules/brunch/bin/brunch build
+  * mix compile
+
+### генерация баз и миграция
+  * mix ecto.create
+  * mix ecto.migrate
+  * mix run priv/repo/seeds.exs -- создание дефолтного пользователя
+
+
+### Запуск сервера
+  * mix phoenix.server

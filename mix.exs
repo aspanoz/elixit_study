@@ -49,25 +49,23 @@ defmodule AppPhoenix.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      # {:phoenix, "~> 1.1.4"},
-      #{:phoenix_ecto, "~> 2.0"},
-      {:phoenix, "~> 1.2.0-rc"},
-      {:phoenix_pubsub, "~> 1.0.0-rc"},
-      {:phoenix_ecto, "~> 3.0-rc"},
+      {:phoenix, "~> 1.2.0"},
+      {:phoenix_pubsub, "~> 1.0"},
+      {:phoenix_ecto, "~> 3.0.1"},
 
-      {:phoenix_html, "~> 2.4"},
-      {:gettext, "~> 0.9"},
+      {:phoenix_html, "~> 2.6.1"},
+      {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
-      {:mariaex, ">= 0.0.0"}, # mysql client
-      {:comeonin, "~> 2.4"},  # authorize
-      {:earmark, "~> 0.2.1"}, # markdown?
+      {:mariaex, ">= 0.7.7"}, # mysql client
+      {:comeonin, "~> 2.5"},  # authorize
+      {:earmark, "~> 1.0.1"}, # markdown?
 
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       # {:ex_machina, "~> 0.6.1", only: :dev},
       {:ex_machina, "~> 1.0.0-beta.1", github: "thoughtbot/ex_machina"},
-      {:dogma, "~> 0.1", only: :dev},
+      {:dogma, "~> 0.1.7", only: :dev},
       {:credo, "~> 0.3", only: [:dev, :test]},
-      {:wallaby, "~> 0.5.0", only: [:dev, :test], github: "keathley/wallaby"}
+      {:wallaby, "~> 0.8.0", only: [:dev, :test], github: "keathley/wallaby"}
     ]
   end
 

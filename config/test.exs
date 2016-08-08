@@ -18,7 +18,7 @@ config :comeonin, bcrypt_log_rounds: 4
 config :app_phoenix, AppPhoenix.Repo,
   adapter: Ecto.Adapters.MySQL,
   username: "root",
-  password: "",
+  password: "qwerty",
   database: "app_phoenix_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox

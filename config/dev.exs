@@ -36,7 +36,7 @@ config :phoenix, :stacktrace_depth, 20
 config :app_phoenix, AppPhoenix.Repo,
   adapter: Ecto.Adapters.MySQL,
   username: "root",
-  password: "",
+  password: "qwerty",
   database: "app_phoenix_dev",
   hostname: "localhost",
   pool_size: 10

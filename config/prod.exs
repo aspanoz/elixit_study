@@ -1,6 +1,6 @@
 use Mix.Config
 
-config :app_phoenix, AppPhoenix.Endpoint,
+config :app_phoenix, AppPhoenix.Repo,
   http: [port: {:system, "PORT"}],
   url: [host: "example.com", port: 80],
   cache_static_manifest: "priv/static/manifest.json"
