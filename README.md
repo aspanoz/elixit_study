@@ -28,6 +28,11 @@ Ready to run in production? Please [check our deployment guides](http://www.phoe
   * mix deps.get
   * npm install
 
+### установка phontomjs для функциональных тестов
+  * npm install -g phantomjs
+  * mix test                             -- запустить все тесты
+  * mix test --only controller_user      -- запустить тесты с тегом controller_user
+
 ### скомпилировать проект
   * node node_modules/brunch/bin/brunch build
   * mix compile
@@ -35,7 +40,7 @@ Ready to run in production? Please [check our deployment guides](http://www.phoe
 ### генерация баз и миграция
   * mix ecto.create
   * mix ecto.migrate
-  * mix run priv/repo/seeds.exs -- создание дефолтного пользователя
+  * mix run priv/repo/seeds.exs           -- создание дефолтного пользователя
 
 
 ### Запуск сервера
