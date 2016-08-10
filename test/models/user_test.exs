@@ -34,11 +34,12 @@ defmodule AppPhoenix.UserTest do
     assert changeset.valid?
   end
 
-  @tag :model_user
-  test "changeset with valid attributes" do
-    changeset = User.changeset(%User{}, @valid_attrs)
-    assert changeset.valid?
-  end
+  # error - dublicate test
+  # @tag :model_user
+  # test "changeset with valid attributes" do
+    # changeset = User.changeset(%User{}, @valid_attrs)
+    # assert changeset.valid?
+  # end
 
   @tag :model_user
   test "changeset with invalid attributes" do

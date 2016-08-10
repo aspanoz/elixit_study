@@ -2,7 +2,7 @@ defmodule AppPhoenix.CommentChannelTest do
   use AppPhoenix.ChannelCase
 
   alias AppPhoenix.CommentChannel
-  alias AppPhoenix.MyDebuger
+  # alias AppPhoenix.MyDebuger
 
   setup do
     {:ok, _, socket} =

@@ -1,16 +1,16 @@
 defmodule AppPhoenix.UserControllerTest do
   use AppPhoenix.AcceptanceCase, async: true
 
-  alias AppPhoenix.MyDebuger
+  # alias AppPhoenix.MyDebuger
 
   @tag :controller_user
-  test "list admin user on /users/ page", %{session: session} do
+  test "find admin user on /users/ page", %{session: session} do
+
     admin =
-      #MyDebuger.echo session.base_url
       session
-      |> visit("http://localhost:4000/users/")
-      |> take_screenshot("_users")
-      #|> MyDebuger.echo_bypass
+      |> visit("/users/")
+      |> take_screenshot()
+      # |> MyDebuger.echo_bypass
       |> find(".users")
       |> all(".user")
       |> List.first
@@ -22,20 +22,18 @@ defmodule AppPhoenix.UserControllerTest do
   @tag :controller_user
   test "login as admin", %{session: session} do
     session
-    |> visit("http://localhost:4000/sessions/new")
+    |> visit("/sessions/new")
     |> find("#login-form")
-    |> take_screenshot("_form")
     |> fill_in("user_username", with: "admin")
     |> fill_in("user_password", with: "test")
-    |> take_screenshot("_form_fill")
-    |> click("#submit")
-    
+    |> take_screenshot()
+    |> click_on("Submit")
+
     login_success =
       session
-      |> take_screenshot("_login")
       |> find(".alert-info")
+      |> take_screenshot()
       |> has_text?("Sign in successful!")
-      #|> MyDebuger.echo_bypass
 
     assert get_current_path(session) == "/"
     assert login_success == :true 
