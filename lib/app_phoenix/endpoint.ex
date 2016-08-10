@@ -6,13 +6,13 @@ defmodule AppPhoenix.Endpoint do
 
   socket "/socket", AppPhoenix.UserSocket
 
-  plug Plug.Static,
-    at: "/", from: :app_phoenix, gzip: false,
-    only: ~w(css fonts images js favicon.ico robots.txt)
-
   if Application.get_env(:app_phoenix, :sql_sandbox) do
     plug Phoenix.Ecto.SQL.Sandbox
   end
+
+  plug Plug.Static,
+    at: "/", from: :app_phoenix, gzip: false,
+    only: ~w(css fonts images js favicon.ico robots.txt)
 
   if code_reloading? do
     socket "/phoenix/live_reload/socket", Phoenix.LiveReloader.Socket
@@ -37,4 +37,9 @@ defmodule AppPhoenix.Endpoint do
     signing_salt: "9jeB1vBg"
 
   plug AppPhoenix.Router
+
+  if Application.get_env(:app_phoenix, :sql_sandbox) do
+    plug Phoenix.Ecto.SQL.Sandbox
+  end
+
 end
