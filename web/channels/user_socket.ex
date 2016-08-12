@@ -4,7 +4,7 @@ defmodule AppPhoenix.UserSocket do
   '''
   use Phoenix.Socket
 
-  channel "comments:*", AppPhoenix.CommentChannel
+  # channel "comments:*", AppPhoenix.CommentChannel
 
   transport :websocket, Phoenix.Transports.WebSocket
 

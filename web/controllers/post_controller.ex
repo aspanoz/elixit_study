@@ -9,7 +9,7 @@ defmodule AppPhoenix.PostController do
   alias AppPhoenix.RoleChecker
   alias AppPhoenix.TextProcessor
   alias AppPhoenix.Comment
-  alias AppPhoenix.MyDebuger
+  # alias AppPhoenix.MyDebuger
 
   plug :scrub_params, "post" when action in [:create, :update]
   plug :assign_user

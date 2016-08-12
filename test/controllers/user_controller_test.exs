@@ -1,160 +1,42 @@
 defmodule AppPhoenix.UserControllerTest do
   use AppPhoenix.AcceptanceCase, async: true
 
-  # alias AppPhoenix.MyDebuger
+  alias AppPhoenix.Factory
 
-  @tag :controller_user
-  test "find admin user on /users/ page", %{session: session} do
-
-    admin =
-      session
-      |> visit("/users/")
-      |> take_screenshot()
-      # |> MyDebuger.echo_bypass
-      |> find(".users")
-      |> all(".user")
-      |> List.first
-      |> find(".user-name")
-      |> text
-    assert admin == "admin"
+  setup do
+    # create sample user
+    role = Factory.insert(:role)
+    user = Factory.insert(:user, role: role)
+    admin = Factory.insert(:user, role: Factory.insert(:role, admin: true))
+    {
+      :ok,
+      user: user,
+      admin: admin,
+    }
   end
 
-  @tag :controller_user
-  test "login as admin", %{session: session} do
+  defp login(session, user) do
     session
     |> visit("/sessions/new")
     |> find("#login-form")
-    |> fill_in("user_username", with: "admin")
-    |> fill_in("user_password", with: "test")
-    |> take_screenshot()
+    |> fill_in("user_username", with: user.username)
+    |> fill_in("user_password", with: user.password)
     |> click_on("Submit")
 
-    login_success =
-      session
-      |> find(".alert-info")
-      |> take_screenshot()
-      |> has_text?("Sign in successful!")
-
-    assert get_current_path(session) == "/"
-    assert login_success == :true 
+    session
   end
+
+
+
+  #  edit user data 
+  #  delete user
+
+  # @tag :current
 
 end
 
 
-
-
-#defmodule AppPhoenix.UserControllerTest do
-  #use AppPhoenix.ConnCase
-
-  #alias AppPhoenix.User
-  #alias AppPhoenix.Factory
-
-  #@valid_create_attrs %{
-    #email: "test@test.com",
-    #username: "test",
-    #password: "test",
-    #password_confirmation: "test"
-  #}
-  #@valid_attrs %{
-    #email: "test@test.com",
-    #username: "test"
-  #}
-  #@invalid_attrs %{}
-
-  #setup do
-    ## create simple user
-    #user_role = Factory.insert(:role)
-    #nonadmin_user = Factory.insert(:user, role: user_role)
-    #some_user = Factory.insert(:user, role: user_role)
-    ## create admin user
-    #admin_role = Factory.insert(:role, admin: true)
-    #admin_user = Factory.insert(:user, role: admin_role)
-    #{
-      #:ok,
-      #conn: build_conn(),
-      #admin_role: admin_role,
-      #user_role: user_role,
-      #some_user: some_user,
-      #nonadmin_user: nonadmin_user,
-      #admin_user: admin_user
-    #}
-  #end
-
-  #defp valid_create_attrs(role) do
-    #Map.put(@valid_create_attrs, :role_id, role.id)
-  #end
-
-  #defp login_user(conn, user) do
-    #post(
-      #conn,
-      #session_path(conn, :create),
-      #user: %{username: user.username, password: user.password}
-    #)
-  #end
-
-
-  #@tag :controller_user
-  #test "lists all entries on index", %{conn: conn} do
-    #conn = get conn, user_path(conn, :index)
-    #assert html_response(conn, 200) =~ "Listing users"
-  #end
-
-  #@tag :controller_user
-  #@tag :admin
-  #test "renders form for new resources",
-    #%{conn: conn, admin_user: admin_user}
-  #do
-    #conn = login_user(conn, admin_user)
-    #conn = get conn, user_path(conn, :new)
-    #assert html_response(conn, 200) =~ "New user"
-  #end
-
-  #@tag :controller_user
-  #@tag :admin
-  #test "redirects from new form when not admin",
-    #%{conn: conn, nonadmin_user: nonadmin_user}
-  #do
-    #conn = login_user(conn, nonadmin_user)
-    #conn = get conn, user_path(conn, :new)
-    #flash = "You are not authorized to create new users!"
-    #assert get_flash(conn, :error) == flash
-    #assert redirected_to(conn) == page_path(conn, :index)
-    #assert conn.halted
-  #end
-
-  #@tag :controller_user
-  #@tag :admin
-  #test "creates resource and redirects when data is valid",
-    #%{conn: conn, user_role: user_role, admin_user: admin_user}
-  #do
-    #conn = login_user(conn, admin_user)
-    #conn = post(
-      #conn,
-      #user_path(conn, :create),
-      #user: valid_create_attrs(user_role)
-    #)
-    #assert redirected_to(conn) == user_path(conn, :index)
-    #assert Repo.get_by(User, @valid_attrs)
-  #end
-
-  #@tag :controller_user
-  #@tag :admin
-  #test "redirects from creating user when not admin",
-    #%{conn: conn, user_role: user_role, nonadmin_user: nonadmin_user}
-  #do
-    #conn = login_user(conn, nonadmin_user)
-    #conn = post(
-      #conn,
-      #user_path(conn, :create),
-      #user: valid_create_attrs(user_role)
-    #)
-    #flash = "You are not authorized to create new users!"
-    #assert get_flash(conn, :error) == flash
-    #assert redirected_to(conn) == page_path(conn, :index)
-    #assert conn.halted
-  #end
-
+  
   #@tag :controller_user
   #@tag :admin
   #test "does not create resource and renders errors when data is invalid",
@@ -165,14 +47,7 @@ end
     #assert html_response(conn, 200) =~ "New user"
   #end
 
-  #@tag :controller_user
-  #test "shows chosen resource", %{conn: conn} do
-    #user = Repo.insert! %User{}
-    #conn = get conn, user_path(conn, :show, user)
-    #assert html_response(conn, 200) =~ "Show user"
-  #end
-
-
+ 
   #@tag :controller_user
   #test "renders page not found when id is nonexistent", %{conn: conn} do
     #assert_error_sent 404, fn ->

@@ -4,7 +4,7 @@ defmodule AppPhoenix.User do
   '''
   use AppPhoenix.Web, :model
 
-  alias AppPhoenix.MyDebuger
+  # alias AppPhoenix.MyDebuger
 
   import Comeonin.Bcrypt, only: [hashpwsalt: 1]
 

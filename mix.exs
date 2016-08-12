@@ -65,7 +65,8 @@ defmodule AppPhoenix.Mixfile do
       {:ex_machina, "~> 1.0.0-beta.1", github: "thoughtbot/ex_machina"},
       {:dogma, "~> 0.1.7", only: :dev},
       {:credo, "~> 0.3", only: [:dev, :test]},
-      {:wallaby, "~> 0.8.0", only: [:dev, :test], github: "keathley/wallaby"}
+      # {:wallaby, "~> 0.8.0", only: [:dev, :test], github: "keathley/wallaby"}
+      {:wallaby, "~> 0.8.0", only: [:dev, :test], path: "/home/web-gluhov/workspace/html/whatever/elixir/wallaby"}
     ]
   end
 
