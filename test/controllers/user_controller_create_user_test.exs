@@ -15,25 +15,6 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
     }
   end
 
-  defp login(session, user) do
-    session
-    |> visit("/sessions/new")
-    |> find("#login-form")
-    |> fill_in("user_username", with: user.username)
-    |> fill_in("user_password", with: user.password)
-    |> click_on("Submit")
-
-    session
-  end
-
-  defp logout(session) do
-    session
-    |> visit("/")
-    |> click_link("Log out")
-    session
-  end
-
-
   # Test create user
 
   @tag :controller_user_create
@@ -49,7 +30,6 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
     |> select("Role", option: "User Role")
     |> click_on("Submit")
 
-      
     assert session |> find(".alert-info") |> has_text?("User created successfully.") == :true 
 
     session

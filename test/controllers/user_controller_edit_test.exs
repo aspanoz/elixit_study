@@ -14,25 +14,6 @@ defmodule AppPhoenix.UserControllerEditTest do
     }
   end
 
-  defp login(session, user) do
-    session
-    |> visit("/sessions/new")
-    |> find("#login-form")
-    |> fill_in("user_username", with: user.username)
-    |> fill_in("user_password", with: user.password)
-    |> click_on("Submit")
-
-    session
-  end
-
-  defp logout(session) do
-    session
-    |> visit("/")
-    |> click_link("Log out")
-    session
-  end
-
-
   @tag :controller_user_edit
   @tag :controller_user
   test "edit default admin user data by default admin", %{session: session} do

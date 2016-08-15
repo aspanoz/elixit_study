@@ -15,20 +15,6 @@ defmodule AppPhoenix.UserControllerTest do
     }
   end
 
-  defp login(session, user) do
-    session
-    |> visit("/sessions/new")
-    |> find("#login-form")
-    |> fill_in("user_username", with: user.username)
-    |> fill_in("user_password", with: user.password)
-    |> click_on("Submit")
-
-    session
-  end
-
-
-
-  #  edit user data 
   #  delete user
 
   # @tag :current

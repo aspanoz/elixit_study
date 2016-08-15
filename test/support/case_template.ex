@@ -8,6 +8,23 @@ defmodule AppPhoenix.AcceptanceCase do
       import Ecto.Model
       import Ecto.Query, only: [from: 2]
       import AppPhoenix.Router.Helpers
+
+      def login(session, user) do
+        session
+        |> visit("/sessions/new")
+        |> find("#login-form")
+        |> fill_in("user_username", with: user.username)
+        |> fill_in("user_password", with: user.password)
+        |> click_on("Submit")
+        session
+      end
+
+      def logout(session) do
+        session
+        |> visit("/")
+        |> click_link("Log out")
+        session
+      end
     end
   end
 
