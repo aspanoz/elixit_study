@@ -1,15 +1,12 @@
 defmodule AppPhoenix.UserControllerLoginTest do
   use AppPhoenix.AcceptanceCase, async: true
 
-  alias AppPhoenix.Factory
-
   setup do
     # create sample user
-    role = Factory.insert(:role)
-    user = Factory.insert(:user, role: role)
+    admin = %{ username: "admin", password: "test", email: "admin@test.com" }
     {
       :ok,
-      user: user,
+      admin: admin,
     }
   end
 
@@ -33,16 +30,11 @@ defmodule AppPhoenix.UserControllerLoginTest do
 
   @tag :controller_user_login
   @tag :controller_user
-  test "login as default admin", %{session: session} do
-    session
-    |> visit("/sessions/new")
-    |> find("#login-form")
-    |> fill_in("user_username", with: "admin")
-    |> fill_in("user_password", with: "test")
-    |> click_on("Submit")
+  test "login as default admin", %{session: session, admin: admin} do
 
     login_success =
       session
+      |> login(admin)
       |> find(".alert-info")
       |> take_screenshot("login_as_default_admin")
       |> has_text?("Sign in successful!")
@@ -54,12 +46,12 @@ defmodule AppPhoenix.UserControllerLoginTest do
 
   @tag :controller_user_login
   @tag :controller_user
-  test "wrong username", %{session: session, user: user} do
+  test "wrong username", %{session: session, admin: admin} do
     session
     |> visit("/sessions/new")
     |> find("#login-form")
     |> fill_in("user_username", with: "error")
-    |> fill_in("user_password", with: user.password)
+    |> fill_in("user_password", with: admin.password)
     |> take_screenshot("wrong_user_name")
     |> click_on("Submit")
 
@@ -75,11 +67,11 @@ defmodule AppPhoenix.UserControllerLoginTest do
 
   @tag :controller_user_login
   @tag :controller_user
-  test "wrong user password", %{session: session, user: user} do
+  test "wrong user password", %{session: session, admin: admin} do
     session
     |> visit("/sessions/new")
     |> find("#login-form")
-    |> fill_in("user_username", with: user.username)
+    |> fill_in("user_username", with: admin.username)
     |> fill_in("user_password", with: "error")
     |> take_screenshot("wrong_user_password")
     |> click_on("Submit")

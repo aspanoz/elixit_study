@@ -6,26 +6,23 @@ defmodule AppPhoenix.UserControllerEditTest do
   setup do
     role = Factory.insert(:role)
     user = Factory.insert(:user, role: role)
-    admin = Factory.insert(:user, role: Factory.insert(:role, admin: true))
+    newattr = %{ username: "fooboo", password: "fooboo", email: "fooboo@example.com" }
+    admin = %{ username: "admin", password: "test", email: "admin@test.com" }
     {
       :ok,
       user: user,
       admin: admin,
+      newattr: newattr
     }
   end
 
+
   @tag :controller_user_edit
   @tag :controller_user
-  test "edit default admin user data by default admin", %{session: session} do
+  test "edit default admin user data by default admin", %{session: session, newattr: newattr, admin: admin} do
 
     session
-    |> visit("/sessions/new")
-    |> find("#login-form")
-    |> fill_in("user_username", with: "admin")
-    |> fill_in("user_password", with: "test")
-    |> click_on("Submit")
-
-    session
+    |> login(admin)
     |> visit("/users/")
     |> find(".users")
     |> all(".user")
@@ -34,15 +31,15 @@ defmodule AppPhoenix.UserControllerEditTest do
     |> take_screenshot("edit_admin")
 
     assert session |> find("h2") |> has_text?("Edit user") == :true 
-    assert session |> find("#user_username") |> has_value?("admin") == :true 
-    assert session |> find("#user_email") |> has_value?("admin@test.com") == :true 
+    assert session |> find("#user_username") |> has_value?( admin.username ) == :true 
+    assert session |> find("#user_email") |> has_value?( admin.email ) == :true 
     assert session |> find("#user_role_id") |> has_value?("2") == :true 
 
     session
-    |> fill_in("user_username", with: "new_admin")
-    |> fill_in("user_password", with: "fooboo")
-    |> fill_in("user_password_confirmation", with: "fooboo")
-    |> fill_in("user_email", with: "whatever@example.com")
+    |> fill_in("user_username", with: newattr.username)
+    |> fill_in("user_password", with: newattr.password)
+    |> fill_in("user_password_confirmation", with: newattr.password)
+    |> fill_in("user_email", with: newattr.email)
     |> select("Role", option: "User Role")
     |> click_on("Submit")
 
@@ -55,13 +52,7 @@ defmodule AppPhoenix.UserControllerEditTest do
 
     session
     |> logout
-    |> visit("/sessions/new")
-    |> find("#login-form")
-    |> fill_in("user_username", with: "new_admin")
-    |> fill_in("user_password", with: "fooboo")
-    |> click_on("Submit")
-
-    session
+    |> login(newattr)
     |> visit("/users/")
     |> find(".users")
     |> all(".user")
@@ -69,8 +60,8 @@ defmodule AppPhoenix.UserControllerEditTest do
     |> click_link("Edit")
     |> take_screenshot("edit_admin_check")
 
-    assert session |> find("#user_username") |> has_value?("new_admin") == :true 
-    assert session |> find("#user_email") |> has_value?("whatever@example.com") == :true 
+    assert session |> find("#user_username") |> has_value?(newattr.username) == :true 
+    assert session |> find("#user_email") |> has_value?( newattr.email ) == :true 
     assert session |> find("#user_role_id") |> has_value?("1") == :true 
 
   end

@@ -7,11 +7,13 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
     # create sample user
     role = Factory.insert(:role)
     user = Factory.insert(:user, role: role)
-    admin = Factory.insert(:user, role: Factory.insert(:role, admin: true))
+    admin = %{ username: "admin", password: "test", email: "admin@test.com" }
+    newattr = %{ username: "fooboo", password: "fooboo", email: "fooboo@example.com" }
     {
       :ok,
       user: user,
       admin: admin,
+      newattr: newattr
     }
   end
 
@@ -19,29 +21,23 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
 
   @tag :controller_user_create
   @tag :controller_user
-  test "create sample user and test it`s login", %{session: session, admin: admin} do
+  test "create sample user and test it`s login", %{session: session, admin: admin, newattr: newattr} do
     session
     |> login(admin)
     |> visit("/users/new")
-    |> fill_in("user_username", with: "whatever")
-    |> fill_in("user_password", with: "test")
-    |> fill_in("user_password_confirmation", with: "test")
-    |> fill_in("user_email", with: "whatever@example.com")
+    |> fill_in("user_username", with: newattr.username)
+    |> fill_in("user_password", with: newattr.password)
+    |> fill_in("user_password_confirmation", with: newattr.password)
+    |> fill_in("user_email", with: newattr.email)
     |> select("Role", option: "User Role")
     |> click_on("Submit")
 
     assert session |> find(".alert-info") |> has_text?("User created successfully.") == :true 
 
-    session
-    |> logout
-    |> visit("/sessions/new")
-    |> find("#login-form")
-    |> fill_in("user_username", with: "whatever")
-    |> fill_in("user_password", with: "test")
-    |> click_on("Submit")
-
     login_success =
       session
+      |> logout
+      |> login(newattr)
       |> find(".alert-info")
       |> take_screenshot("create_user")
       |> has_text?("Sign in successful!")
@@ -74,14 +70,14 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
 
   @tag :controller_user_create
   @tag :controller_user
-  test "create admin user and test it`s login", %{session: session, admin: admin} do
+  test "create admin user and test it`s login", %{session: session, admin: admin, newattr: newattr} do
     session
     |> login(admin)
     |> visit("/users/new")
-    |> fill_in("user_username", with: "another_admin")
-    |> fill_in("user_password", with: "test")
-    |> fill_in("user_password_confirmation", with: "test")
-    |> fill_in("user_email", with: "another_admin@example.com")
+    |> fill_in("user_username", with: newattr.username)
+    |> fill_in("user_password", with: newattr.password)
+    |> fill_in("user_password_confirmation", with: newattr.password)
+    |> fill_in("user_email", with: newattr.email)
     |> select("Role", option: "Admin Role")
     |> click_on("Submit")
 
@@ -89,11 +85,7 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
 
     session
     |> logout
-    |> visit("/sessions/new")
-    |> find("#login-form")
-    |> fill_in("user_username", with: "another_admin")
-    |> fill_in("user_password", with: "test")
-    |> click_on("Submit")
+    |> login(newattr)
 
     assert session |> find(".alert-info") |> has_text?("Sign in successful!") == :true 
   end
@@ -101,13 +93,13 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
 
   @tag :controller_user_create
   @tag :controller_user
-  test "create user without user name", %{session: session, admin: admin} do
+  test "create user without user name", %{session: session, admin: admin, newattr: newattr} do
     session
     |> login(admin)
     |> visit("/users/new")
-    |> fill_in("user_password", with: "test")
-    |> fill_in("user_password_confirmation", with: "test")
-    |> fill_in("user_email", with: "whatever@example.com")
+    |> fill_in("user_password", with: newattr.password)
+    |> fill_in("user_password_confirmation", with: newattr.password)
+    |> fill_in("user_email", with: newattr.email)
     |> select("Role", option: "User Role")
     |> click_on("Submit")
 
@@ -133,14 +125,13 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
 
   @tag :controller_user_create
   @tag :controller_user
-  test "create user without email", %{session: session, admin: admin} do
+  test "create user without email", %{session: session, admin: admin, newattr: newattr} do
     session
     |> login(admin)
     |> visit("/users/new")
-    |> fill_in("user_username", with: "test")
-    |> fill_in("user_password", with: "test")
-    |> fill_in("user_email", with: "")
-    |> fill_in("user_password_confirmation", with: "test")
+    |> fill_in("user_username", with: newattr.username)
+    |> fill_in("user_password", with: newattr.password)
+    |> fill_in("user_password_confirmation", with: newattr.password)
     |> select("Role", option: "User Role")
     |> click_on("Submit")
 
@@ -166,13 +157,13 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
 
   @tag :controller_user_create
   @tag :controller_user
-  test "create user with wrong password confirmatio", %{session: session, admin: admin} do
+  test "create user with wrong password confirmatio", %{session: session, admin: admin, newattr: newattr} do
     session
     |> login(admin)
     |> visit("/users/new")
-    |> fill_in("user_username", with: "test")
-    |> fill_in("user_password", with: "test")
-    |> fill_in("user_email", with: "whatever@example.com")
+    |> fill_in("user_username", with: newattr.username)
+    |> fill_in("user_password", with: newattr.password)
+    |> fill_in("user_email", with: newattr.email)
     |> select("Role", option: "User Role")
     |> click_on("Submit")
 
