@@ -14,11 +14,11 @@ defmodule AppPhoenix.UserControllerLoginTest do
 
   @tag :controller_user_login
   @tag :controller_user
-  test "find admin user on /users/ page", %{session: session} do
+  test "find admin user on /users/ page", %{session: session, scr: scr} do
     admin =
       session
       |> visit("/users/")
-      |> take_screenshot("find_default_admin")
+      |> take_screenshot?( "find_default_admin", scr.takeit? )
       |> find(".users")
       |> all(".user")
       |> List.first
@@ -30,13 +30,13 @@ defmodule AppPhoenix.UserControllerLoginTest do
 
   @tag :controller_user_login
   @tag :controller_user
-  test "login as default admin", %{session: session, admin: admin} do
+  test "login as default admin", %{session: session, scr: scr, admin: admin} do
 
     login_success =
       session
       |> login(admin)
       |> find(".alert-info")
-      |> take_screenshot("login_as_default_admin")
+      |> take_screenshot?( "login_as_default_admin", scr.takeit? )
       |> has_text?("Sign in successful!")
 
     assert get_current_path(session) == "/"
@@ -46,13 +46,13 @@ defmodule AppPhoenix.UserControllerLoginTest do
 
   @tag :controller_user_login
   @tag :controller_user
-  test "wrong username", %{session: session, admin: admin} do
+  test "wrong username", %{session: session, scr: scr, admin: admin} do
     session
     |> visit("/sessions/new")
     |> find("#login-form")
     |> fill_in("user_username", with: "error")
     |> fill_in("user_password", with: admin.password)
-    |> take_screenshot("wrong_user_name")
+    |> take_screenshot?( "wrong_user_name", scr.takeit? )
     |> click_on("Submit")
 
     wrong_login =
@@ -67,13 +67,13 @@ defmodule AppPhoenix.UserControllerLoginTest do
 
   @tag :controller_user_login
   @tag :controller_user
-  test "wrong user password", %{session: session, admin: admin} do
+  test "wrong user password", %{session: session, scr: scr, admin: admin} do
     session
     |> visit("/sessions/new")
     |> find("#login-form")
     |> fill_in("user_username", with: admin.username)
     |> fill_in("user_password", with: "error")
-    |> take_screenshot("wrong_user_password")
+    |> take_screenshot?( "wrong_user_password", scr.takeit? )
     |> click_on("Submit")
 
     wrong_passwd =

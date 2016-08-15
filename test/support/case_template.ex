@@ -20,11 +20,17 @@ defmodule AppPhoenix.AcceptanceCase do
       end
 
       def logout(session) do
-        session
-        |> visit("/")
-        |> click_link("Log out")
+        session |> visit("/") |> click_link("Log out")
+      end
+
+      def take_screenshot?(session, message, flag) when flag == :true do
+        session |> take_screenshot(message)
+      end
+
+      def take_screenshot?(session, message, _ ) do
         session
       end
+
     end
   end
 
@@ -36,7 +42,9 @@ defmodule AppPhoenix.AcceptanceCase do
 
     metadata = Phoenix.Ecto.SQL.Sandbox.metadata_for(AppPhoenix.Repo, self())
 
+    scr = %{ takeit?: :false } # take screenshots
+
     {:ok, session} = Wallaby.start_session(metadata: metadata)
-    {:ok, session: session}
+    {:ok, session: session, scr: scr}
   end
 end

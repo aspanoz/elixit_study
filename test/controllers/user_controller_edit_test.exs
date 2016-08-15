@@ -19,7 +19,7 @@ defmodule AppPhoenix.UserControllerEditTest do
 
   @tag :controller_user_edit
   @tag :controller_user
-  test "edit default admin user data by default admin", %{session: session, newattr: newattr, admin: admin} do
+  test "edit default admin user data by default admin", %{session: session, scr: scr, newattr: newattr, admin: admin} do
 
     session
     |> login(admin)
@@ -28,7 +28,7 @@ defmodule AppPhoenix.UserControllerEditTest do
     |> all(".user")
     |> List.first
     |> click_link("Edit")
-    |> take_screenshot("edit_admin")
+    |> take_screenshot?( "edit_admin", scr.takeit? )
 
     assert session |> find("h2") |> has_text?("Edit user") == :true 
     assert session |> find("#user_username") |> has_value?( admin.username ) == :true 
@@ -46,7 +46,7 @@ defmodule AppPhoenix.UserControllerEditTest do
     edit_success =
       session
       |> find(".alert-info")
-      |> take_screenshot("edit_admin_done")
+      |> take_screenshot?( "edit_admin_done", scr.takeit? )
       |> has_text?("User updated successfully.")
     assert edit_success == :true 
 
@@ -58,7 +58,7 @@ defmodule AppPhoenix.UserControllerEditTest do
     |> all(".user")
     |> List.first
     |> click_link("Edit")
-    |> take_screenshot("edit_admin_check")
+    |> take_screenshot?( "edit_admin_check", scr.takeit? )
 
     assert session |> find("#user_username") |> has_value?(newattr.username) == :true 
     assert session |> find("#user_email") |> has_value?( newattr.email ) == :true 

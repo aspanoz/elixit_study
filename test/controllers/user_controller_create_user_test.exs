@@ -21,7 +21,7 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
 
   @tag :controller_user_create
   @tag :controller_user
-  test "create sample user and test it`s login", %{session: session, admin: admin, newattr: newattr} do
+  test "create sample user and test it`s login", %{session: session, scr: scr, admin: admin, newattr: newattr} do
     session
     |> login(admin)
     |> visit("/users/new")
@@ -39,7 +39,7 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
       |> logout
       |> login(newattr)
       |> find(".alert-info")
-      |> take_screenshot("create_user")
+      |> take_screenshot?( "create_user", scr.takeit? )
       |> has_text?("Sign in successful!")
 
     assert login_success == :true 
@@ -48,7 +48,7 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
 
   @tag :controller_user_create
   @tag :controller_user
-  test "login sample user and be redirected when try to create new user", %{session: session, user: user} do
+  test "login sample user and be redirected when try to create new user", %{session: session, scr: scr, user: user} do
     login_success =
       session
       |> login(user)
@@ -59,7 +59,7 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
       session
       |> visit("/users/new")
       |> find(".alert-danger")
-      |> take_screenshot("simple_user_redirect")
+      |> take_screenshot?( "simple_user_redirect", scr.takeit? )
       |> has_text?("You are not authorized to create new users!")
 
     assert login_success == :true 
@@ -70,7 +70,7 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
 
   @tag :controller_user_create
   @tag :controller_user
-  test "create admin user and test it`s login", %{session: session, admin: admin, newattr: newattr} do
+  test "create admin user and test it`s login", %{session: session, scr: scr, admin: admin, newattr: newattr} do
     session
     |> login(admin)
     |> visit("/users/new")
@@ -79,6 +79,7 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
     |> fill_in("user_password_confirmation", with: newattr.password)
     |> fill_in("user_email", with: newattr.email)
     |> select("Role", option: "Admin Role")
+    |> take_screenshot?( "create_admin_user", scr.takeit? )
     |> click_on("Submit")
 
     assert session |> find(".alert-info") |> has_text?("User created successfully.") == :true 
@@ -88,12 +89,16 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
     |> login(newattr)
 
     assert session |> find(".alert-info") |> has_text?("Sign in successful!") == :true 
+
+    session
+    |> visit("/users/new") # only admin user can visit this page
+    assert get_current_path(session) == "/users/new"
   end
 
 
   @tag :controller_user_create
   @tag :controller_user
-  test "create user without user name", %{session: session, admin: admin, newattr: newattr} do
+  test "create user without user name", %{session: session, scr: scr, admin: admin, newattr: newattr} do
     session
     |> login(admin)
     |> visit("/users/new")
@@ -108,7 +113,7 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
     no_user_name =
       session
       |> find("div.alert-danger") #alert in form
-      |> take_screenshot("no_user_name")
+      |> take_screenshot?( "no_user_name", scr.takeit? )
       |> has_text?("Oops, something went wrong! Please check the errors below.")
 
     assert no_user_name == :true 
@@ -125,7 +130,7 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
 
   @tag :controller_user_create
   @tag :controller_user
-  test "create user without email", %{session: session, admin: admin, newattr: newattr} do
+  test "create user without email", %{session: session, scr: scr, admin: admin, newattr: newattr} do
     session
     |> login(admin)
     |> visit("/users/new")
@@ -140,7 +145,7 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
     no_email =
       session
       |> find("div.alert-danger") #alert in form
-      |> take_screenshot("no_email")
+      |> take_screenshot?( "no_email", scr.takeit? )
       |> has_text?("Oops, something went wrong! Please check the errors below.")
 
     assert no_email == :true 
@@ -157,7 +162,7 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
 
   @tag :controller_user_create
   @tag :controller_user
-  test "create user with wrong password confirmatio", %{session: session, admin: admin, newattr: newattr} do
+  test "create user with wrong password confirmatio", %{session: session, scr: scr, admin: admin, newattr: newattr} do
     session
     |> login(admin)
     |> visit("/users/new")
@@ -172,7 +177,7 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
     no_password_confirmation =
       session
       |> find("div.alert-danger") #alert in form
-      |> take_screenshot("no_password_confirmation")
+      |> take_screenshot?( "no_password_confirmation", scr.takeit? )
       |> has_text?("Oops, something went wrong! Please check the errors below.")
 
     assert no_password_confirmation == :true 
