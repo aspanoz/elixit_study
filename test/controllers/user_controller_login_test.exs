@@ -40,27 +40,22 @@ defmodule AppPhoenix.UserControllerLoginTest do
       |> has_text?("Sign in successful!")
 
     assert get_current_path(session) == "/"
-    assert login_success == :true 
+    assert login_success == :true
   end
 
 
   @tag :controller_user_login
   @tag :controller_user
   test "wrong username", %{session: session, scr: scr, admin: admin} do
-    session
-    |> visit("/sessions/new")
-    |> find("#login-form")
-    |> fill_in("user_username", with: "error")
-    |> fill_in("user_password", with: admin.password)
-    |> take_screenshot?( "wrong_user_name", scr.takeit? )
-    |> click_on("Submit")
 
     wrong_login =
       session
+      |> login( %{admin | username: "error"} )
+      |> take_screenshot?( "wrong_user_name", scr.takeit? )
       |> find(".alert-danger")
       |> has_text?("Invalid username/password combination!")
 
-    assert wrong_login == :true 
+    assert wrong_login == :true
     assert get_current_path(session) == "/"
   end
 
@@ -68,20 +63,15 @@ defmodule AppPhoenix.UserControllerLoginTest do
   @tag :controller_user_login
   @tag :controller_user
   test "wrong user password", %{session: session, scr: scr, admin: admin} do
-    session
-    |> visit("/sessions/new")
-    |> find("#login-form")
-    |> fill_in("user_username", with: admin.username)
-    |> fill_in("user_password", with: "error")
-    |> take_screenshot?( "wrong_user_password", scr.takeit? )
-    |> click_on("Submit")
 
     wrong_passwd =
       session
+      |> login( %{admin | password: "error"} )
+      |> take_screenshot?( "wrong_user_password", scr.takeit? )
       |> find(".alert-danger")
       |> has_text?("Invalid username/password combination!")
 
-    assert wrong_passwd == :true 
+    assert wrong_passwd == :true
     assert get_current_path(session) == "/"
   end
 

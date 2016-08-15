@@ -8,13 +8,30 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
     role = Factory.insert(:role)
     user = Factory.insert(:user, role: role)
     admin = %{ username: "admin", password: "test", email: "admin@test.com" }
-    newattr = %{ username: "fooboo", password: "fooboo", email: "fooboo@example.com" }
+    newattr = %{
+      username: "fooboo",
+      password: "fooboo",
+      password_confirmation: "fooboo",
+      email: "fooboo@example.com" ,
+      role: "User Role"
+    }
     {
       :ok,
       user: user,
       admin: admin,
       newattr: newattr
     }
+  end
+
+  def fill_user_form(session, attr) do
+    session
+    |> fill_in("user_username", with: attr.username)
+    |> fill_in("user_password", with: attr.password)
+    |> fill_in("user_password_confirmation", with: attr.password_confirmation)
+    |> fill_in("user_email", with: attr.email)
+    |> select("Role", option: attr.role)
+    |> click_on("Submit")
+    session
   end
 
   # Test create user
@@ -25,14 +42,9 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
     session
     |> login(admin)
     |> visit("/users/new")
-    |> fill_in("user_username", with: newattr.username)
-    |> fill_in("user_password", with: newattr.password)
-    |> fill_in("user_password_confirmation", with: newattr.password)
-    |> fill_in("user_email", with: newattr.email)
-    |> select("Role", option: "User Role")
-    |> click_on("Submit")
+    |> fill_user_form( newattr )
 
-    assert session |> find(".alert-info") |> has_text?("User created successfully.") == :true 
+    assert session |> find(".alert-info") |> has_text?("User created successfully.") == :true
 
     login_success =
       session
@@ -42,7 +54,7 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
       |> take_screenshot?( "create_user", scr.takeit? )
       |> has_text?("Sign in successful!")
 
-    assert login_success == :true 
+    assert login_success == :true
   end
 
 
@@ -62,8 +74,8 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
       |> take_screenshot?( "simple_user_redirect", scr.takeit? )
       |> has_text?("You are not authorized to create new users!")
 
-    assert login_success == :true 
-    assert be_redirected == :true 
+    assert login_success == :true
+    assert be_redirected == :true
     assert get_current_path(session) == "/"
   end
 
@@ -74,21 +86,16 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
     session
     |> login(admin)
     |> visit("/users/new")
-    |> fill_in("user_username", with: newattr.username)
-    |> fill_in("user_password", with: newattr.password)
-    |> fill_in("user_password_confirmation", with: newattr.password)
-    |> fill_in("user_email", with: newattr.email)
-    |> select("Role", option: "Admin Role")
+    |> fill_user_form( %{newattr | role: "Admin Role"} )
     |> take_screenshot?( "create_admin_user", scr.takeit? )
-    |> click_on("Submit")
 
-    assert session |> find(".alert-info") |> has_text?("User created successfully.") == :true 
+    assert session |> find(".alert-info") |> has_text?("User created successfully.") == :true
 
     session
     |> logout
     |> login(newattr)
 
-    assert session |> find(".alert-info") |> has_text?("Sign in successful!") == :true 
+    assert session |> find(".alert-info") |> has_text?("Sign in successful!") == :true
 
     session
     |> visit("/users/new") # only admin user can visit this page
@@ -102,11 +109,7 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
     session
     |> login(admin)
     |> visit("/users/new")
-    |> fill_in("user_password", with: newattr.password)
-    |> fill_in("user_password_confirmation", with: newattr.password)
-    |> fill_in("user_email", with: newattr.email)
-    |> select("Role", option: "User Role")
-    |> click_on("Submit")
+    |> fill_user_form( %{newattr | username: ""} )
 
     assert get_current_path(session) == "/users"
 
@@ -116,14 +119,14 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
       |> take_screenshot?( "no_user_name", scr.takeit? )
       |> has_text?("Oops, something went wrong! Please check the errors below.")
 
-    assert no_user_name == :true 
+    assert no_user_name == :true
 
     help_block =
       session
       |> find(".help-block")
       |> has_text?("can't be blank")
 
-    assert help_block == :true 
+    assert help_block == :true
 
   end
 
@@ -134,11 +137,7 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
     session
     |> login(admin)
     |> visit("/users/new")
-    |> fill_in("user_username", with: newattr.username)
-    |> fill_in("user_password", with: newattr.password)
-    |> fill_in("user_password_confirmation", with: newattr.password)
-    |> select("Role", option: "User Role")
-    |> click_on("Submit")
+    |> fill_user_form( %{newattr | email: ""} )
 
     assert get_current_path(session) == "/users"
 
@@ -148,29 +147,25 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
       |> take_screenshot?( "no_email", scr.takeit? )
       |> has_text?("Oops, something went wrong! Please check the errors below.")
 
-    assert no_email == :true 
+    assert no_email == :true
 
     help_block =
       session
       |> find(".help-block")
       |> has_text?("can't be blank")
 
-    assert help_block == :true 
+    assert help_block == :true
 
   end
 
 
   @tag :controller_user_create
   @tag :controller_user
-  test "create user with wrong password confirmatio", %{session: session, scr: scr, admin: admin, newattr: newattr} do
+  test "create user with empty password confirmation", %{session: session, scr: scr, admin: admin, newattr: newattr} do
     session
     |> login(admin)
     |> visit("/users/new")
-    |> fill_in("user_username", with: newattr.username)
-    |> fill_in("user_password", with: newattr.password)
-    |> fill_in("user_email", with: newattr.email)
-    |> select("Role", option: "User Role")
-    |> click_on("Submit")
+    |> fill_user_form( %{newattr | password_confirmation: ""} )
 
     assert get_current_path(session) == "/users"
 
@@ -180,15 +175,17 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
       |> take_screenshot?( "no_password_confirmation", scr.takeit? )
       |> has_text?("Oops, something went wrong! Please check the errors below.")
 
-    assert no_password_confirmation == :true 
+    assert no_password_confirmation == :true
 
     help_block =
       session
       |> find(".help-block")
       |> has_text?("can't be blank")
 
-    assert help_block == :true 
-
+    assert help_block == :true
   end
+
+
+  # test "create user with wrong password confirmation", %{session: session, scr: scr, admin: admin, newattr: newattr} do
 
 end
