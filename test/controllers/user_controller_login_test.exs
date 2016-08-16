@@ -20,8 +20,7 @@ defmodule AppPhoenix.UserControllerLoginTest do
       |> visit("/users/")
       |> take_screenshot?( "find_default_admin", scr.takeit? )
       |> find(".users")
-      |> all(".user")
-      |> List.first
+      |> xfind("//tr[contains(@class, 'user') and td[contains(@class, 'user-name') ]='admin']")
       |> find(".user-name")
       |> text
     assert admin == "admin"

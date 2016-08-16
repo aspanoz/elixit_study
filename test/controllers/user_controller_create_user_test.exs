@@ -8,7 +8,7 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
     role = Factory.insert(:role)
     user = Factory.insert(:user, role: role)
     admin = %{ username: "admin", password: "test", email: "admin@test.com" }
-    newattr = %{
+    fillform = %{
       username: "fooboo",
       password: "fooboo",
       password_confirmation: "fooboo",
@@ -19,7 +19,7 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
       :ok,
       user: user,
       admin: admin,
-      newattr: newattr
+      fillform: fillform
     }
   end
 
@@ -38,18 +38,18 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
 
   @tag :controller_user_create
   @tag :controller_user
-  test "create sample user and test it`s login", %{session: session, scr: scr, admin: admin, newattr: newattr} do
+  test "create sample user and test it`s login", %{session: session, scr: scr, admin: admin, fillform: fillform} do
     session
     |> login(admin)
     |> visit("/users/new")
-    |> fill_user_form( newattr )
+    |> fill_user_form( fillform )
 
     assert session |> find(".alert-info") |> has_text?("User created successfully.") == :true
 
     login_success =
       session
       |> logout
-      |> login(newattr)
+      |> login(fillform)
       |> find(".alert-info")
       |> take_screenshot?( "create_user", scr.takeit? )
       |> has_text?("Sign in successful!")
@@ -82,18 +82,18 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
 
   @tag :controller_user_create
   @tag :controller_user
-  test "create admin user and test it`s login", %{session: session, scr: scr, admin: admin, newattr: newattr} do
+  test "create admin user and test it`s login", %{session: session, scr: scr, admin: admin, fillform: fillform} do
     session
     |> login(admin)
     |> visit("/users/new")
-    |> fill_user_form( %{newattr | role: "Admin Role"} )
+    |> fill_user_form( %{fillform | role: "Admin Role"} )
     |> take_screenshot?( "create_admin_user", scr.takeit? )
 
     assert session |> find(".alert-info") |> has_text?("User created successfully.") == :true
 
     session
     |> logout
-    |> login(newattr)
+    |> login(fillform)
 
     assert session |> find(".alert-info") |> has_text?("Sign in successful!") == :true
 
@@ -105,11 +105,11 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
 
   @tag :controller_user_create
   @tag :controller_user
-  test "create user without user name", %{session: session, scr: scr, admin: admin, newattr: newattr} do
+  test "create user without user name", %{session: session, scr: scr, admin: admin, fillform: fillform} do
     session
     |> login(admin)
     |> visit("/users/new")
-    |> fill_user_form( %{newattr | username: ""} )
+    |> fill_user_form( %{fillform | username: ""} )
 
     assert get_current_path(session) == "/users"
 
@@ -120,24 +120,17 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
       |> has_text?("Oops, something went wrong! Please check the errors below.")
 
     assert no_user_name == :true
-
-    help_block =
-      session
-      |> find(".help-block")
-      |> has_text?("can't be blank")
-
-    assert help_block == :true
-
+    assert session |> find(".help-block") |> has_text?("can't be blank") == :true
   end
 
 
   @tag :controller_user_create
   @tag :controller_user
-  test "create user without email", %{session: session, scr: scr, admin: admin, newattr: newattr} do
+  test "create user without email", %{session: session, scr: scr, admin: admin, fillform: fillform} do
     session
     |> login(admin)
     |> visit("/users/new")
-    |> fill_user_form( %{newattr | email: ""} )
+    |> fill_user_form( %{fillform | email: ""} )
 
     assert get_current_path(session) == "/users"
 
@@ -148,24 +141,17 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
       |> has_text?("Oops, something went wrong! Please check the errors below.")
 
     assert no_email == :true
-
-    help_block =
-      session
-      |> find(".help-block")
-      |> has_text?("can't be blank")
-
-    assert help_block == :true
-
+    assert session |> find(".help-block") |> has_text?("can't be blank") == :true
   end
 
 
   @tag :controller_user_create
   @tag :controller_user
-  test "create user with empty password confirmation", %{session: session, scr: scr, admin: admin, newattr: newattr} do
+  test "create user with empty password confirmation", %{session: session, scr: scr, admin: admin, fillform: fillform} do
     session
     |> login(admin)
     |> visit("/users/new")
-    |> fill_user_form( %{newattr | password_confirmation: ""} )
+    |> fill_user_form( %{fillform | password_confirmation: ""} )
 
     assert get_current_path(session) == "/users"
 
@@ -176,16 +162,10 @@ defmodule AppPhoenix.UserControllerCreateUserTest do
       |> has_text?("Oops, something went wrong! Please check the errors below.")
 
     assert no_password_confirmation == :true
-
-    help_block =
-      session
-      |> find(".help-block")
-      |> has_text?("can't be blank")
-
-    assert help_block == :true
+    assert session |> find(".help-block") |> has_text?("can't be blank") == :true
   end
 
 
-  # test "create user with wrong password confirmation", %{session: session, scr: scr, admin: admin, newattr: newattr} do
+  # test "create user with wrong password confirmation", %{session: session, scr: scr, admin: admin, fillform: fillform} do
 
 end

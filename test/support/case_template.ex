@@ -31,6 +31,10 @@ defmodule AppPhoenix.AcceptanceCase do
         session
       end
 
+      def xfind(session, xpath) do
+        session |> find({:xpath, xpath})
+      end
+
     end
   end
 
