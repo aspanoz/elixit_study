@@ -25,6 +25,7 @@ exports.config = {
 
   plugins: {
     babel: {
+      presets: ["es2015", "react"],
       ignore: [/web\/static\/vendor/]
     }
   },
@@ -37,6 +38,6 @@ exports.config = {
 
   npm: {
     enabled: true,
-    whitelist: ["phoenix", "phoenix_html", "jquery"]
+    whitelist: ["phoenix", "phoenix_html", "react", "react-dom"]
   }
 };
