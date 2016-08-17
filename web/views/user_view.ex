@@ -4,7 +4,6 @@ defmodule AppPhoenix.UserView do
     @TODO tests
   '''
   use AppPhoenix.Web, :view
-  # alias AppPhoenix.MyDebuger
 
   def roles_for_select(roles) do
     roles
