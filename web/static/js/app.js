@@ -23,27 +23,6 @@ for (var modalButton of document.getElementsByClassName('r_modal')) {
 }
 
 /*
-function is_modal(state = false, action) {
-  switch (action.type) {
-  case 'MODALOPEN':
-    state = true;
-    return state
-  case 'MODALCLOSE':
-    state = false;
-    return state
-  default:
-    return state
-  }
-}
-
-function is_modal (state) {
-  return {
-    user: state.user
-  }
-}
-
-connect(is_modal)(App)
-let store = createStore(is_modal)
 class ModalWrapper extends React.Component {
   render() {
     if(this.props.isOpen){
@@ -96,10 +75,4 @@ class Modal extends React.Component {
   }
 }
 
-ReactDOM.render(
-  <Provider store={store}>
-    <Modal/>
-  </Provider>,
-  document.getElementById("r_modal")
-)
 */

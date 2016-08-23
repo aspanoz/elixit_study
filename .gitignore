@@ -3,7 +3,10 @@
 /db
 /deps
 /*.ez
-/.lvimrc
 /*.lock
-node_modules/
-screenshots
+erl_crash.dump
+/.lvimrc
+/node_modules/
+/screenshots
+
+/priv/static/js/
