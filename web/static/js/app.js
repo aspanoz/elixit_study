@@ -39,12 +39,6 @@ class ModalWrapper extends React.Component {
   }
 }
 
-class ModalTestButton extends React.Component {
-  render() {
-    <button onClick={this.openModal}>Open modal</button>
-  }
-}
-
 class Modal extends React.Component {
 
   getInitialState() {
