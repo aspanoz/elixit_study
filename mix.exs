@@ -66,7 +66,7 @@ defmodule AppPhoenix.Mixfile do
       {:dogma, "~> 0.1.7", only: :dev},
       {:credo, "~> 0.3", only: [:dev, :test]},
       # {:wallaby, "~> 0.8.0", only: [:dev, :test], github: "keathley/wallaby"}
-      {:wallaby, "~> 0.8.0", only: [:dev, :test], path: "/home/web-gluhov/workspace/html/whatever/elixir/wallaby"}
+      {:wallaby, "~> 0.8.0", only: [:dev, :test], path: "../wallaby"}
     ]
   end
 

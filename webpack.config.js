@@ -1,11 +1,14 @@
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var CopyWebpackPlugin = require("copy-webpack-plugin");
 var StyleLintPlugin = require('stylelint-webpack-plugin');
+var sugarss = require('sugarss');
+var autoprefixer = require('autoprefixer');
+var postcssNesting = require('postcss-nesting');
 // сортировка css-стилей по выбраному шаблону
 // https://github.com/hudochenkov/postcss-sorting
 
 module.exports = {
-  entry: ["./web/static/css/app.css", "./web/static/js/app.js"],
+  entry: ["./web/static/css/app.sss", "./web/static/js/app.js"],
 
   output: {
     path: "./priv/static",
@@ -24,24 +27,23 @@ module.exports = {
         }
       },
       {
-        test: /\.css$/,
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader')
+        test: /\.sss$/,
+        loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader?parser=sugarss')
       }
     ]
   },
 
-  postcss: [ autoprefixer({ browsers: ['last 2 versions'] }) ],
-  // postcss() {
-  //   return {
-  //     plugins: [sugarss, autoprefixer]
-  //   };
-  // },
+  postcss() {
+    return {
+      plugins: [autoprefixer, postcssNesting]
+    };
+  },
 
   plugins: [
     new StyleLintPlugin({
       configFile: '.stylelintrc',
       context: 'web/static/css',
-      files: '**/*.css',
+      files: '**/*.sss',
       failOnError: false,
       quiet: false,
     }),
