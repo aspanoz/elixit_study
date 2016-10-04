@@ -33,6 +33,8 @@ module.exports = {
     ]
   },
 
+// добавить css modules
+// добавить спрайт(?)
   postcss() {
     return {
       plugins: [autoprefixer, postcssNesting]
